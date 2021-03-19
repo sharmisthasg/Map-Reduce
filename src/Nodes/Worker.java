@@ -2,67 +2,32 @@ package Nodes;
 
 import Constants.MRConstant;
 import DataType.KeyValuePair;
+import Factory.WorkerFactory;
+import Service.MRService;
 
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Worker{
 
-    //workerType passed from Master
-
-    public void mapper(){
-
-
-    }
-
-    public void reducer(){
-
-    }
-
-}
-
-abstract class Mapper{
-
-    int startLine;
-    int offset;
-    String inputpath;
-    String outputpath;
-    ArrayList<KeyValuePair> kvpairs;
-
-    public Mapper(int startLine, int offset, String inputpath, String outputpath)
-    {
-        this.startLine=startLine;
-        this.offset=offset;
-        this.inputpath=inputpath;
-        this.outputpath=outputpath;
-    }
-
-    /*
-    * 1. Read input file from start to start+offset
-    * 2. Generate <k,v> pairs for data:
-    *       1. Read one line of input
-    *       2. Apply user defined function to that line
-    *       3. Aggregate for other lines
-    * 3. Write to intermediate file
-    * */
-
-    public abstract void map_execute();
-
-    public void write()
-    {
-        try {
-            String filename = "intermediate-mapper-"+String.valueOf(startLine)+"-"+String.valueOf(offset)+".txt";
-            FileWriter fileWriter = new FileWriter("intermediate/"+filename);
-
-            for(KeyValuePair kp: kvpairs)
-            {
-                fileWriter.write(kp.toKeyValueString());
-            }
-
-            fileWriter.close();
-        }catch (Exception e){
-            System.out.println(MRConstant.FILE_WRITE_EXCEPTION);
-        }
+    public static void main(String[] args){
+        /*
+         * This is the main method of Worker that calls Mapper or Reducer.
+         */
+        System.out.println("Initiating Worker Process");
+        int workerId = Integer.parseInt(args[0]);
+        int ioPort = Integer.parseInt(args[1]);
+        String workerType = args[2];
+        String inputFilePathStr = args[3];
+        List<String> inputFilePath = Arrays.asList(inputFilePathStr.split(" "));
+        String udfClass = args[4];
+        String startLine = args[5];
+        String offset = args[6];
+        WorkerFactory workerFactory = new WorkerFactory();
+        MRService mapperReducerService = workerFactory.getMapperReducerFactory(workerId, workerType, ioPort, inputFilePath, udfClass);
+        mapperReducerService.execute();
     }
 
 }

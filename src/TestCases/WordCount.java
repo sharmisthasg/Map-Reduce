@@ -9,7 +9,7 @@ public class WordCount implements UDFInterface<StringComp, StringComp, StringCom
 
     @Override
     public void map(StringComp key, StringComp value, Output output) {
-
+        //String[] words = split(value
     }
 
     @Override
