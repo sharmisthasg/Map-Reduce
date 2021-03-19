@@ -1,8 +1,19 @@
 package Nodes;
 
+import Constants.MRConstant;
+
 public class Master {
 
-    /*TODO:
+
+    private String configFile;
+
+    public Master(String configFile){
+        this.configFile=configFile;
+    }
+    public Master(){}
+
+    public void execute(){
+        /*TODO:
     1. Read from config file using Properties which creates a map of sorts
     2. Create N mapper (Worker class) processes and update ActiveWorkers
     3. Wait for N mapper process to get completed
@@ -12,4 +23,5 @@ public class Master {
     7. While(True) for 5 and 6
     8. Terminate
     */
+    }
 }
