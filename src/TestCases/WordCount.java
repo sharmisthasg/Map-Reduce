@@ -4,17 +4,32 @@ import DataType.IntComp;
 import DataType.StringComp;
 import Model.Output;
 import Service.UDFInterface;
+import java.io.IOException;
+import java.util.StringTokenizer;
 
 public class WordCount implements UDFInterface<StringComp, StringComp, StringComp, IntComp> {
 
     @Override
     public void map(StringComp key, StringComp value, Output output) {
-        //String[] words = split(value
+        String text = value.getValue();
+        StringTokenizer itr = new StringTokenizer(text);
+        while (itr.hasMoreTokens()) {
+            StringComp word = new StringComp();
+            word.setValue(itr.nextToken().trim());
+            IntComp one = new IntComp(1);
+            output.write(word, one);
+        }
     }
 
     @Override
     public void reduce(StringComp key, Iterable<IntComp> valueIter, Output output) {
-
+        IntComp result = new IntComp();
+        int sum = 0;
+        for (IntComp val : valueIter) {
+            sum += val.getValue();
+        }
+        result.setValue(sum);
+        output.write(key, result);
     }
 }
 

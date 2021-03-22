@@ -1,11 +1,15 @@
 package Model;
 
-import java.util.Map;
+import java.util.*;
 
 public class Output {
 
     //<k,V> pair output will be set here
     private Map<Object,Object> outputMap;
+
+    public Output(){
+        outputMap = new HashMap<Object, Object>();
+    }
 
     public void write(Object key, Object value){
         outputMap.put(key,value);

@@ -48,7 +48,7 @@ public class Master {
             System.out.println(numberOfLines);
             boolean received = true;
             while (startLine < numberOfLines) {
-                String commandList[] = {"java", "-cp", "out/production/MapReduceProject",
+                String commandList[] = {"java", "-cp", "out/production/p1_mapreduce-team-9",
                         MRConstant.WORKER_JAVA_LOCATION,
                         String.valueOf(workerId),
                         String.valueOf(this.ioPort),
