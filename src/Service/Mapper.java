@@ -56,4 +56,19 @@ public class Mapper implements MRService{
             System.out.println(MRConstant.FILE_WRITE_EXCEPTION);
         }
     }
+
+    @Override
+    public String toString() {
+        return "Mapper{" +
+                "id=" + id +
+                ", ioPort=" + ioPort +
+                ", workerType='" + workerType + '\'' +
+                ", inputFilePath=" + inputFilePath +
+                ", udfClass='" + udfClass + '\'' +
+                ", OUTPUT_PATH='" + OUTPUT_PATH + '\'' +
+                ", kvpairs=" + kvpairs +
+                ", offset=" + offset +
+                ", startLine=" + startLine +
+                '}';
+    }
 }

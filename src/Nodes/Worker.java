@@ -27,7 +27,8 @@ public class Worker{
         String offset = args[6];
         WorkerFactory workerFactory = new WorkerFactory();
         MRService mapperReducerService = workerFactory.getMapperReducerFactory(workerId, workerType, ioPort, inputFilePath, udfClass);
-        mapperReducerService.execute();
+        mapperReducerService.toString();
+        //mapperReducerService.execute();
     }
 
 }

@@ -3,8 +3,10 @@ package Nodes;
 import Config.MapReduceProperties;
 import Constants.MRConstant;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Properties;
+import java.util.*;
 
 public class Master {
 
@@ -12,19 +14,59 @@ public class Master {
     String inputFilePath;
     String outputFilePath;
     String udfClass;
+    int ioPort = 5001;
 
     public Master(){}
 
     public void start() throws IOException {
+        System.out.println("Loading properties from config file....");
         MapReduceProperties mrProp = new MapReduceProperties();
         Properties prop = mrProp.getProperties();
         this.numOfWorkers = prop.getProperty("N");
         this.inputFilePath = prop.getProperty("input_file_path");
         this.outputFilePath = prop.getProperty("output_file_path");
         this.udfClass = prop.getProperty("udf_class");
+        System.out.println("Properties Loaded => " + prop.values());
+        execute();
     }
 
+    /*int workerId = Integer.parseInt(args[0]);
+    int ioPort = Integer.parseInt(args[1]);
+    String workerType = args[2];
+    String inputFilePathStr = args[3];
+    List<String> inputFilePath = Arrays.asList(inputFilePathStr.split(" "));
+    String udfClass = args[4];
+    String startLine = args[5];
+    String offset = args[6];*/
+
     public void execute(){
+        try {
+            int numberOfLines = countLinesFile();
+            int offset = (int) Math.ceil((double)numberOfLines/(double) Integer.parseInt(this.numOfWorkers));
+            int startLine = 0;
+            int workerId = 0;
+            System.out.println(numberOfLines);
+            while(startLine < numberOfLines){
+                String commandList[] = {"java", "-cp", "out/production/MapReduceProject",
+                        MRConstant.WORKER_JAVA_LOCATION,
+                        String.valueOf(this.ioPort),
+                        MRConstant.MAPPER,
+                        this.inputFilePath,
+                        this.udfClass,
+                        String.valueOf(startLine),
+                        String.valueOf(offset)
+                };
+                // creating worker node process with workerType = Mapper
+                ProcessBuilder processBuilder = new ProcessBuilder(commandList);
+                processBuilder.inheritIO();
+                Process process = processBuilder.start();
+                startLine += offset;
+            }
+        }catch(FileNotFoundException fnfe){
+            System.out.println("File Not found " + fnfe.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         /*TODO:
     1. Read from config file using Properties which creates a map of sorts
     2. Read number of lines in the file 'K'-> K/N is the offset, startline = startline + offset
@@ -37,5 +79,17 @@ public class Master {
     8. Terminate
     */
 
+    }
+
+    private int countLinesFile() throws FileNotFoundException {
+        int count = 0;
+        File file = new File(this.inputFilePath);
+        Scanner sc = new Scanner(file);
+        while(sc.hasNextLine()) {
+            sc.nextLine();
+            count++;
+        }
+        sc.close();
+        return count;
     }
 }
