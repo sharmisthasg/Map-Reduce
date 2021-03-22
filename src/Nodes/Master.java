@@ -3,9 +3,9 @@ package Nodes;
 import Config.MapReduceProperties;
 import Constants.MRConstant;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.*;
 
 public class Master {
@@ -46,7 +46,8 @@ public class Master {
             int startLine = 0;
             int workerId = 0;
             System.out.println(numberOfLines);
-            while(startLine < numberOfLines){
+            boolean received = true;
+            while (startLine < numberOfLines) {
                 String commandList[] = {"java", "-cp", "out/production/MapReduceProject",
                         MRConstant.WORKER_JAVA_LOCATION,
                         String.valueOf(workerId),
@@ -64,6 +65,29 @@ public class Master {
                 startLine += offset;
                 workerId++;
             }
+                ServerSocket server = new ServerSocket(this.ioPort);
+                System.out.println("Server started");
+
+                System.out.println("Waiting for a client ...");
+
+                Socket socket = server.accept();
+                System.out.println("Client accepted");
+
+                // takes input from the client socket
+                DataInputStream in = new DataInputStream( new BufferedInputStream(socket.getInputStream()));
+                String line = "";
+                while (!line.equals("Over"))
+                {
+                    try {
+                        line = in.readUTF();
+                        System.out.println("Received ==> " + line);
+                    }
+                    catch(IOException i)
+                    {
+                        i.printStackTrace();
+                    }
+                }
+
         }catch(FileNotFoundException fnfe){
             System.out.println("File Not found " + fnfe.getMessage());
         } catch (IOException e) {

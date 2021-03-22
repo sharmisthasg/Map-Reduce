@@ -5,10 +5,10 @@ import DataType.KeyValuePair;
 import DataType.StringComp;
 import Model.Output;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.*;
 import java.lang.reflect.Method;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -43,6 +43,34 @@ public class Mapper implements MRService{
         2. docId, String {entire document)
         3. Using java reflection call
          */
+        System.out.println("Mapper Process Started");
+
+
+        try
+        {
+            Socket socket = new Socket("127.0.0.1", this.ioPort);
+            System.out.println("Connected");
+
+            // takes input from terminal
+            DataInputStream in  = new DataInputStream(System.in);
+
+            // sends output to the socket
+            DataOutputStream out    = new DataOutputStream(socket.getOutputStream());
+            out.writeUTF("Hi Tejas, How are you doing today?");
+            out.writeUTF("Over");
+        }
+        catch(UnknownHostException u)
+        {
+            System.out.println(u);
+        }
+        catch(IOException i)
+        {
+            System.out.println(i);
+        }
+
+
+
+
         List<StringComp> combined_data = new ArrayList<>();
         for(String filepath: inputFilePath)
         {
