@@ -49,6 +49,7 @@ public class Master {
             while(startLine < numberOfLines){
                 String commandList[] = {"java", "-cp", "out/production/MapReduceProject",
                         MRConstant.WORKER_JAVA_LOCATION,
+                        String.valueOf(workerId),
                         String.valueOf(this.ioPort),
                         MRConstant.MAPPER,
                         this.inputFilePath,
@@ -61,6 +62,7 @@ public class Master {
                 processBuilder.inheritIO();
                 Process process = processBuilder.start();
                 startLine += offset;
+                workerId++;
             }
         }catch(FileNotFoundException fnfe){
             System.out.println("File Not found " + fnfe.getMessage());
