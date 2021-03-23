@@ -1,6 +1,7 @@
 package Service;
 
 import Constants.MRConstant;
+import DataType.IntComp;
 import DataType.KeyValuePair;
 import DataType.StringComp;
 import Model.Output;
@@ -11,6 +12,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Mapper implements MRService{
@@ -56,64 +58,61 @@ public class Mapper implements MRService{
 
             // sends output to the socket
             DataOutputStream out    = new DataOutputStream(socket.getOutputStream());
-            out.writeUTF("Hi Tejas, How are you doing today?");
-            out.writeUTF("Over");
-        }
-        catch(UnknownHostException u)
-        {
-            System.out.println(u);
-        }
-        catch(IOException i)
-        {
-            System.out.println(i);
-        }
+            out.writeUTF("Starting communication with Mapper");
 
 
 
-
-        List<StringComp> combined_data = new ArrayList<>();
+        String combined_data="";
         for(String filepath: inputFilePath)
         {
             File inputFile = new File(filepath);
             Scanner sc = new Scanner(inputFile);
             while (sc.hasNextLine()) {
                 String data = sc.nextLine();
-                combined_data.add(new StringComp(data));
+                combined_data = combined_data + " " + data;
             }
             sc.close();
         }
-        try {
-            Class cls = Class.forName(udfClass);
+
+            Class cls = Class.forName("TestCases."+udfClass);
             Class args[] = new Class[3];
             args[0] = StringComp.class;
             args[1] = StringComp.class;
             args[2] = Output.class;
 
             Method map_method = cls.getDeclaredMethod("map", args);
-            map_method.invoke(cls,args);
 
-            map_method.invoke(cls, new StringComp("1"), combined_data, new Output());
+            Output output = new Output();
+            map_method.invoke(cls.newInstance(), new StringComp("1"), new StringComp(combined_data), output);
+            String output_filename = write(output);
+            out.writeUTF(output_filename);
+            out.writeUTF("Over");
 
         }catch (Exception e){
-            System.out.println(e.getStackTrace());
+            e.printStackTrace();
         }
 
     }
 
-    public void write()
+    public String write(Output output)
     {
         try {
             String filename = "intermediate-mapper-"+String.valueOf(startLine)+"-"+String.valueOf(offset)+".txt";
             FileWriter fileWriter = new FileWriter("intermediate/"+filename);
 
-            for(KeyValuePair kp: kvpairs)
-            {
-                fileWriter.write(kp.toKeyValueString());
-            }
+            Map<Object, Object> outputMap = output.getOutputMap();
 
+            for (Map.Entry<Object,Object> entry : outputMap.entrySet())
+            {
+                StringComp key = (StringComp)entry.getKey();
+                IntComp value = (IntComp) entry.getValue();
+                fileWriter.write(key.getValue()+" "+value.getValue()+"\n");
+            }
             fileWriter.close();
+            return filename;
         }catch (Exception e){
-            System.out.println(MRConstant.FILE_WRITE_EXCEPTION);
+            e.printStackTrace();
+            return "";
         }
     }
 
