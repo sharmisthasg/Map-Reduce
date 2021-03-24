@@ -61,8 +61,9 @@ public class Mapper implements MRService{
             out.writeUTF("Starting communication with Mapper");
 
 
-
         String combined_data="";
+
+
         for(String filepath: inputFilePath)
         {
             File inputFile = new File(filepath);

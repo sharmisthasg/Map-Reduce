@@ -7,7 +7,7 @@ import Service.UDFInterface;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-public class WordCount implements UDFInterface<StringComp, StringComp, StringComp, IntComp> {
+public class WordCount implements UDFInterface<StringComp, StringComp, StringComp, StringComp> {
 
     @Override
     public void map(StringComp key, StringComp value, Output output) {
@@ -22,11 +22,11 @@ public class WordCount implements UDFInterface<StringComp, StringComp, StringCom
     }
 
     @Override
-    public void reduce(StringComp key, Iterable<IntComp> valueIter, Output output) {
+    public void reduce(StringComp key, Iterable<StringComp> valueIter, Output output) {
         IntComp result = new IntComp();
         int sum = 0;
-        for (IntComp val : valueIter) {
-            sum += val.getValue();
+        for (StringComp val : valueIter) {
+            sum += Integer.parseInt(val.getValue());
         }
         result.setValue(sum);
         output.write(key, result);
