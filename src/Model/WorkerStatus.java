@@ -1,6 +1,8 @@
 package Model;
 
-public class WorkerStatus {
+import java.io.Serializable;
+
+public class WorkerStatus implements Serializable {
 
     private String filePath;
     private String status;
