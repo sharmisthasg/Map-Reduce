@@ -1,31 +1,30 @@
 package ProcessStates;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class ActiveWorkers {
 
     //TODO: Define Thread safe Singleton class to keep track of active workers
 
-    private ActiveWorkers() {}
-    private ActiveWorkers activeWorkers;
-    private Map<String,Boolean> isActiveWorker;
+    private ActiveWorkers() {
+        this.isActiveWorker = new HashSet<>();
+    }
+    private static ActiveWorkers activeWorkers = null;
+    public Set<Integer> isActiveWorker;
     /*
     <workerid_1 : True>
     <workerid_1 : False>
      */
 
-    public Map<String, Boolean> getIsActiveWorker() {
-        return isActiveWorker;
-    }
+    public static ActiveWorkers getInstance(){
 
-    public ActiveWorkers getInstance(){
-
-        if(this.activeWorkers==null){
-            this.activeWorkers = new ActiveWorkers();
-            this.isActiveWorker = new HashMap<>();
+        if(activeWorkers==null){
+            activeWorkers = new ActiveWorkers();
         }
-        return this.activeWorkers;
+        return activeWorkers;
     }
 
 }

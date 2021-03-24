@@ -2,11 +2,14 @@ package Nodes;
 
 import Config.MapReduceProperties;
 import Constants.MRConstant;
+import Model.WorkerStatus;
+import ProcessStates.ActiveWorkers;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Master {
 
@@ -47,8 +50,9 @@ public class Master {
             int workerId = 0;
             System.out.println(numberOfLines);
             boolean received = true;
+            ActiveWorkers activeWorkers = ActiveWorkers.getInstance();
             while (startLine < numberOfLines) {
-                String commandList[] = {"java", "-cp", "out/production/p1_mapreduce-team-9",
+                String commandList[] = {"java", "-cp", "out/production/MapReduceProject",
                         MRConstant.WORKER_JAVA_LOCATION,
                         String.valueOf(workerId),
                         String.valueOf(this.ioPort),
@@ -62,35 +66,56 @@ public class Master {
                 ProcessBuilder processBuilder = new ProcessBuilder(commandList);
                 processBuilder.inheritIO();
                 Process process = processBuilder.start();
+                activeWorkers.isActiveWorker.add(workerId);
                 startLine += offset;
                 workerId++;
             }
-                ServerSocket server = new ServerSocket(this.ioPort);
-                System.out.println("Server started");
+            ServerSocket server = new ServerSocket(this.ioPort);
+            System.out.println("Server started");
 
-                System.out.println("Waiting for a client ...");
+            System.out.println("Waiting for a client ...");
 
-                Socket socket = server.accept();
-                System.out.println("Client accepted");
+            Socket socket = server.accept();
+            System.out.println("Client accepted");
 
-                // takes input from the client socket
-                DataInputStream in = new DataInputStream( new BufferedInputStream(socket.getInputStream()));
-                String line = "";
-                while (!line.equals("Over"))
-                {
-                    try {
-                        line = in.readUTF();
-                        System.out.println("Received ==> " + line);
-                    }
-                    catch(IOException i)
-                    {
-                        i.printStackTrace();
-                    }
+            // takes input from the client socket
+            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+            String line = "";
+            List<String> reducerInputFiles = new ArrayList<>();
+            while (!activeWorkers.isActiveWorker.isEmpty())
+            {
+                WorkerStatus status = (WorkerStatus) ois.readObject();
+                System.out.println("Received ==> " + status);
+                if(MRConstant.SUCCESS.equals(status.getStatus())){
+                    activeWorkers.isActiveWorker.remove(status.getWorkerId());
+                    reducerInputFiles.add(status.getFilePath());
+
                 }
+            }
 
-        }catch(FileNotFoundException fnfe){
-            System.out.println("File Not found " + fnfe.getMessage());
-        } catch (IOException e) {
+            //Calling Reducer
+            String reducerFilesStr = reducerInputFiles.stream().collect(Collectors.joining(","));
+            int reducers = 0;
+            while (reducers < Integer.parseInt(this.numOfWorkers)) {
+                String commandList[] = {"java", "-cp", "out/production/MapReduceProject",
+                        MRConstant.WORKER_JAVA_LOCATION,
+                        String.valueOf(workerId),
+                        String.valueOf(this.ioPort),
+                        MRConstant.REDUCER,
+                        reducerFilesStr,
+                        this.udfClass,
+                        "",
+                        ""
+                };
+                // creating worker node process with workerType = Mapper
+                ProcessBuilder processBuilder = new ProcessBuilder(commandList);
+                processBuilder.inheritIO();
+                Process process = processBuilder.start();
+                activeWorkers.isActiveWorker.add(workerId);
+                workerId++;
+            }
+
+        }catch(Exception e){
             e.printStackTrace();
         }
         /*TODO:

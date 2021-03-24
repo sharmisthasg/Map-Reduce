@@ -5,6 +5,8 @@ import DataType.IntComp;
 import DataType.KeyValuePair;
 import DataType.StringComp;
 import Model.Output;
+import Model.WorkerStatus;
+import Nodes.Worker;
 
 import java.io.*;
 import java.lang.reflect.Method;
@@ -51,14 +53,14 @@ public class Mapper implements MRService{
         try
         {
             Socket socket = new Socket("127.0.0.1", this.ioPort);
-            System.out.println("Connected");
+            System.out.println("Connected to Server");
 
             // takes input from terminal
             DataInputStream in  = new DataInputStream(System.in);
 
             // sends output to the socket
-            DataOutputStream out    = new DataOutputStream(socket.getOutputStream());
-            out.writeUTF("Starting communication with Mapper");
+            ObjectOutputStream out    = new ObjectOutputStream(socket.getOutputStream());
+            //out.writeUTF("Starting communication with Mapper");
 
 
         String combined_data="";
@@ -86,8 +88,8 @@ public class Mapper implements MRService{
             Output output = new Output();
             map_method.invoke(cls.newInstance(), new StringComp("1"), new StringComp(combined_data), output);
             String output_filename = write(output);
-            out.writeUTF(output_filename);
-            out.writeUTF("Over");
+            WorkerStatus workerStatus = new WorkerStatus(output_filename, MRConstant.SUCCESS, id);
+            out.writeObject(workerStatus);
 
         }catch (Exception e){
             e.printStackTrace();
