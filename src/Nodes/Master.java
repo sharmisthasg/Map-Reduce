@@ -2,6 +2,7 @@ package Nodes;
 
 import Config.MapReduceProperties;
 import Constants.MRConstant;
+import Model.WorkerStatus;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -74,17 +75,20 @@ public class Master {
                 System.out.println("Client accepted");
 
                 // takes input from the client socket
-                DataInputStream in = new DataInputStream( new BufferedInputStream(socket.getInputStream()));
+                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                 String line = "";
                 while (!line.equals("Over"))
                 {
                     try {
-                        line = in.readUTF();
-                        System.out.println("Received ==> " + line);
+                        WorkerStatus status = (WorkerStatus) ois.readObject();
+                        System.out.println("Received ==> " + status);
+                        
                     }
                     catch(IOException i)
                     {
                         i.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
                     }
                 }
 
