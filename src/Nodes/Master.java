@@ -52,7 +52,7 @@ public class Master {
             boolean received = true;
             ActiveWorkers activeWorkers = ActiveWorkers.getInstance();
             while (startLine < numberOfLines) {
-                String commandList[] = {"java", "-cp", "out/production/MapReduceProject",
+                String commandList[] = {"java", "-cp", "out/production/p1_mapreduce-team-9",
                         MRConstant.WORKER_JAVA_LOCATION,
                         String.valueOf(workerId),
                         String.valueOf(this.ioPort),
@@ -97,7 +97,7 @@ public class Master {
             String reducerFilesStr = reducerInputFiles.stream().collect(Collectors.joining(","));
             int reducers = 0;
             while (reducers < Integer.parseInt(this.numOfWorkers)) {
-                String commandList[] = {"java", "-cp", "out/production/MapReduceProject",
+                String commandList[] = {"java", "-cp", "out/production/p1_mapreduce-team-9",
                         MRConstant.WORKER_JAVA_LOCATION,
                         String.valueOf(workerId),
                         String.valueOf(this.ioPort),
@@ -113,6 +113,7 @@ public class Master {
                 Process process = processBuilder.start();
                 activeWorkers.isActiveWorker.add(workerId);
                 workerId++;
+                reducers++;
             }
 
         }catch(Exception e){

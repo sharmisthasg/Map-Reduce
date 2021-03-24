@@ -1,19 +1,16 @@
 package Service;
 
+import Constants.MRConstant;
+import DataType.IntComp;
 import DataType.StringComp;
 import Model.Output;
+import Model.WorkerStatus;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Reducer implements MRService {
 
@@ -21,17 +18,17 @@ public class Reducer implements MRService {
     private int ioPort;
     private String workerType;
     private List<String> inputFilePath;
-    private List<StringComp> keys;
+    private List<String> keys;
     private String udfClass;
 
     public Reducer(int id, String workerType, int ioPort, List<String> inputFilePath,
-                   String udfClass, List<StringComp> keys) {
+                   String udfClass) {
         this.id = id;
         this.ioPort = ioPort;
         this.workerType = workerType;
         this.inputFilePath = inputFilePath;
         this.udfClass = udfClass;
-        this.keys = keys;
+        this.keys = new ArrayList<>();
     }
 
     @Override
@@ -49,31 +46,43 @@ public class Reducer implements MRService {
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
             out.writeUTF("Starting communication with Reducer");
 
+            for(String filename: inputFilePath)
+            {
+                File inputFile = new File("intermediate/"+filename);
+                Scanner sc = new Scanner(inputFile);
+                while (sc.hasNextLine()) {
+                    String[] data = sc.nextLine().split(" ");
+                    if(!keys.contains(data[0]))
+                    {
+                        keys.add(data[0]);
+                    }
+                }
+            }
 
-            HashMap<StringComp,List<StringComp>> combined_data=new HashMap<StringComp,List<StringComp>>();
-            File folderpath = new File("intermediate/");
-            for(File filename: folderpath.listFiles())
+            HashMap<String,List<StringComp>> combined_data=new HashMap<String,List<StringComp>>();
+            for(String filename: inputFilePath)
             {
                 File inputFile = new File("intermediate/"+filename);
                 Scanner sc = new Scanner(inputFile);
                 while (sc.hasNextLine())
                 {
-                    String[] data = sc.nextLine().split(" ");
-                    StringComp curr_key = new StringComp(data[0]);
-                    StringComp curr_value = new StringComp(data[1]);
+                    String temp = sc.nextLine();
+                    String[] data = temp.split(" ");
+                    String curr_key = data[0];
+                    String curr_value = data[1];
 
                     if(keys.contains(curr_key))
                     {
                         if(combined_data.containsKey(curr_key))
                         {
                             List<StringComp> orig = combined_data.get(curr_key);
-                            orig.add(curr_value);
+                            orig.add(new StringComp(curr_value));
                             combined_data.put(curr_key,orig);
                         }
                         else
                         {
-                            List<StringComp> vals=new ArrayList<>();
-                            vals.add(curr_value);
+                            List<StringComp> vals=new ArrayList<StringComp>();
+                            vals.add(new StringComp(curr_value));
                             combined_data.put(curr_key,vals);
                         }
                     }
@@ -90,18 +99,43 @@ public class Reducer implements MRService {
             Method map_method = cls.getDeclaredMethod("reduce", args);
             Output output = new Output();
 
-            for(StringComp key: combined_data.keySet())
+            for(String key: combined_data.keySet())
             {
                 List<StringComp> values = combined_data.get(key);
-                map_method.invoke(cls.newInstance(), key, values, output);
+                map_method.invoke(cls.newInstance(), new StringComp(key), values, output);
             }
 
+            //System.out.println(output);
+            String output_filename = write(output);
+            WorkerStatus workerStatus = new WorkerStatus(output_filename, MRConstant.SUCCESS, id);
+            out.writeUTF(output_filename);
             out.writeUTF("Reducer complete");
             out.writeUTF("Over");
 
-
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public String write(Output output)
+    {
+        try {
+            String filename = "output-reducer-"+String.valueOf(id)+".txt";
+            FileWriter fileWriter = new FileWriter("output/"+filename);
+
+            Map<Object, Object> outputMap = output.getOutputMap();
+
+            for (Map.Entry<Object,Object> entry : outputMap.entrySet())
+            {
+                StringComp key = (StringComp)entry.getKey();
+                IntComp value = (IntComp) entry.getValue();
+                fileWriter.write(key.getValue()+" "+value.getValue()+"\n");
+            }
+            fileWriter.close();
+            return filename;
+        }catch (Exception e){
+            e.printStackTrace();
+            return "";
         }
     }
 }

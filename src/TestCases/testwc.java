@@ -11,7 +11,7 @@ import TestCases.WordCount;
 
 public class testwc {
     public static void main(String[] args) {
-        StringComp key = new StringComp("doc_1");
+        /*StringComp key = new StringComp("doc_1");
         StringComp value = new StringComp("hello hello hi hi whatsup now");
         Output output = new Output();
         WordCount wc = new WordCount();
@@ -30,6 +30,7 @@ public class testwc {
         IntComp x5 = new IntComp(1);
         Iterable<IntComp> iter_1 = Arrays.asList(x3, x4, x5);
         wc.reduce(key_red_1, iter_1, output_red);
-        System.out.println(output_red);
+        System.out.println(output_red);*/
+
     }
 }
