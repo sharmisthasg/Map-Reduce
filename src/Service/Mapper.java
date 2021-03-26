@@ -40,6 +40,52 @@ public class Mapper implements MRService{
         this.udfClass = udfClass;
     }
 
+    public List<List> readFile()
+    {
+        List<Integer> doc_ids = new ArrayList<>();
+        List<String> combined_data = new ArrayList<>();
+        try {
+            int doc_id=0;
+            for (String filepath : inputFilePath) {
+                File inputFile = new File(filepath);
+                Scanner sc = new Scanner(inputFile);
+                while (sc.hasNextLine()) {
+                    String data = sc.nextLine();
+                    combined_data.add(data);
+                    doc_ids.add(doc_id);
+                    doc_id++;
+                }
+                sc.close();
+            }
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        List<List> r = new ArrayList<>();
+        r.add(doc_ids);
+        r.add(combined_data);
+        return r;
+    }
+
+    public Output getMapped(Output output,int doc_id,String data)
+    {
+        try{
+            Class cls = Class.forName("TestCases."+udfClass);
+            Class args[] = new Class[3];
+            args[0] = StringComp.class;
+            args[1] = StringComp.class;
+            args[2] = Output.class;
+
+            Method map_method = cls.getDeclaredMethod("map", args);
+
+            map_method.invoke(cls.newInstance(), new StringComp(String.valueOf(doc_id)), new StringComp(data), output);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return output;
+    }
+
     @Override
     public void execute() throws FileNotFoundException, NoSuchMethodException {
         /*
@@ -63,33 +109,20 @@ public class Mapper implements MRService{
             //out.writeUTF("Starting communication with Mapper");
 
 
-        String combined_data="";
-
-
-        for(String filepath: inputFilePath)
-        {
-            File inputFile = new File(filepath);
-            Scanner sc = new Scanner(inputFile);
-            while (sc.hasNextLine()) {
-                String data = sc.nextLine();
-                combined_data = combined_data + " " + data;
-            }
-            sc.close();
-        }
-
-            Class cls = Class.forName("TestCases."+udfClass);
-            Class args[] = new Class[3];
-            args[0] = StringComp.class;
-            args[1] = StringComp.class;
-            args[2] = Output.class;
-
-            Method map_method = cls.getDeclaredMethod("map", args);
+            List<List> data = readFile();
+            List<Integer> doc_ids = data.get(0);
+            List<String> combined_data = data.get(1);
 
             Output output = new Output();
-            map_method.invoke(cls.newInstance(), new StringComp("1"), new StringComp(combined_data), output);
+            for(int i=0; i<doc_ids.size(); i++)
+            {
+                output = getMapped(output,doc_ids.get(i),combined_data.get(i));
+            }
+            System.out.println(output);
             String output_filename = write(output);
             WorkerStatus workerStatus = new WorkerStatus(output_filename, MRConstant.SUCCESS, id);
             out.writeObject(workerStatus);
+
 
         }catch (Exception e){
             e.printStackTrace();
