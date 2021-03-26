@@ -18,8 +18,7 @@ public class InvertedIndex implements UDFInterface<StringComp, StringComp, Strin
         while (itr.hasMoreTokens()) {
             StringComp word = new StringComp();
             word.setValue(itr.nextToken().trim());
-            IntComp one = new IntComp(Integer.parseInt(key.getValue()));
-            output.write(word, one);
+            output.write(word, key);
         }
     }
 
