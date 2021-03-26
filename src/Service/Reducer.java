@@ -117,7 +117,7 @@ public class Reducer implements MRService {
             Map<Object, Object> outputMap = output.getOutputMap();
 
             for (Map.Entry<Object,Object> entry : outputMap.entrySet())
-            {   
+            {
                 StringComp key = (StringComp)entry.getKey();
                 StringComp value = (StringComp) entry.getValue();
                 fileWriter.write(key.getValue()+" "+value.getValue()+"\n");
