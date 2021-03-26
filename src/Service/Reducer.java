@@ -47,7 +47,10 @@ public class Reducer implements MRService {
                 File inputFile = new File("intermediate/"+filename);
                 Scanner sc = new Scanner(inputFile);
                 while (sc.hasNextLine()) {
-                    String[] data = sc.nextLine().split(" ");
+                    String line = sc.nextLine();
+                    line = line.replace("<","");
+                    line = line.replace(">","");
+                    String[] data = line.split(",");
                     if(!keys.contains(data[0]))
                     {
                         keys.add(data[0]);
@@ -62,8 +65,10 @@ public class Reducer implements MRService {
                 Scanner sc = new Scanner(inputFile);
                 while (sc.hasNextLine())
                 {
-                    String temp = sc.nextLine();
-                    String[] data = temp.split(" ");
+                    String line = sc.nextLine();
+                    line = line.replace("<","");
+                    line = line.replace(">","");
+                    String[] data = line.split(",");
                     String curr_key = data[0];
                     String curr_value = data[1];
 

@@ -125,7 +125,7 @@ public class Mapper implements MRService{
             {
                 StringComp key = (StringComp) entry.getKey();
                 StringComp value = (StringComp) entry.getValue();
-                fileWriter.write(key.getValue()+" "+value.getValue()+"\n");
+                fileWriter.write("<"+key.getValue()+","+value.getValue()+">\n");
             }
             fileWriter.close();
             return filename;

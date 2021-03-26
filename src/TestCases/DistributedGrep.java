@@ -6,14 +6,31 @@ import Service.UDFInterface;
 
 public class DistributedGrep implements UDFInterface<StringComp, StringComp, StringComp, StringComp>
 {
-    String pattern="";
+    String pattern="is";
     @Override
-    public void map(StringComp stringComp, StringComp stringComp2, Output output) {
+    public void map(StringComp key, StringComp value, Output output) {
+
+        StringComp res=value;
+        if(value.getValue().contains(pattern))
+        {
+            output.write(res, new StringComp("1"));
+        }
+        else
+        {
+            output.write(res, new StringComp("0"));
+        }
 
     }
 
     @Override
-    public void reduce(StringComp stringComp, Iterable<StringComp> valueIter, Output output) {
+    public void reduce(StringComp key, Iterable<StringComp> valueIter, Output output) {
+        for(StringComp s:valueIter)
+        {
+            if(s.getValue().equals("1"))
+            {
+                output.write(key,new StringComp(""));
+            }
+        }
 
     }
 }
