@@ -14,11 +14,6 @@ public class ActiveWorkers {
     }
     private static ActiveWorkers activeWorkers = null;
     public Set<Integer> isActiveWorker;
-    /*
-    <workerid_1 : True>
-    <workerid_1 : False>
-     */
-
     public static ActiveWorkers getInstance(){
 
         if(activeWorkers==null){

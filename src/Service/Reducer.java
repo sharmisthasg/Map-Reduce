@@ -20,32 +20,28 @@ public class Reducer implements MRService {
     private List<String> inputFilePath;
     private List<String> keys;
     private String udfClass;
+    private String outputFilePath;
 
     public Reducer(int id, String workerType, int ioPort, List<String> inputFilePath,
-                   String udfClass) {
+                   String udfClass, String outputFilePath) {
         this.id = id;
         this.ioPort = ioPort;
         this.workerType = workerType;
         this.inputFilePath = inputFilePath;
         this.udfClass = udfClass;
         this.keys = new ArrayList<>();
+        this.outputFilePath=outputFilePath;
     }
 
     @Override
     public void execute() {
-        System.out.println("Reducer Process Started");
+        System.out.println("Reducer Process Started???????");
 
         try {
             Socket socket = new Socket("127.0.0.1", this.ioPort);
-            System.out.println("Connected");
-
-            // takes input from terminal
-            DataInputStream in = new DataInputStream(System.in);
-
+            System.out.println("Connected to Server");
             // sends output to the socket
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-            out.writeUTF("Starting communication with Reducer");
-
+            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             for(String filename: inputFilePath)
             {
                 File inputFile = new File("intermediate/"+filename);
@@ -104,38 +100,31 @@ public class Reducer implements MRService {
                 List<StringComp> values = combined_data.get(key);
                 map_method.invoke(cls.newInstance(), new StringComp(key), values, output);
             }
-
-            //System.out.println(output);
-            String output_filename = write(output);
-            WorkerStatus workerStatus = new WorkerStatus(output_filename, MRConstant.SUCCESS, id);
-            out.writeUTF(output_filename);
-            out.writeUTF("Reducer complete");
-            out.writeUTF("Over");
+            write(output);
+            WorkerStatus workerStatus = new WorkerStatus(this.outputFilePath, MRConstant.SUCCESS, id);
+            out.writeObject(workerStatus);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public String write(Output output)
+    public void write(Output output)
     {
         try {
-            String filename = "output-reducer-"+String.valueOf(id)+".txt";
-            FileWriter fileWriter = new FileWriter("output/"+filename);
+            FileWriter fileWriter = new FileWriter(this.outputFilePath);
 
             Map<Object, Object> outputMap = output.getOutputMap();
 
             for (Map.Entry<Object,Object> entry : outputMap.entrySet())
-            {
+            {   
                 StringComp key = (StringComp)entry.getKey();
                 StringComp value = (StringComp) entry.getValue();
                 fileWriter.write(key.getValue()+" "+value.getValue()+"\n");
             }
             fileWriter.close();
-            return filename;
         }catch (Exception e){
             e.printStackTrace();
-            return "";
         }
     }
 }

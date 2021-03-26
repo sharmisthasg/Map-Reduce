@@ -88,31 +88,16 @@ public class Mapper implements MRService{
 
     @Override
     public void execute() throws FileNotFoundException, NoSuchMethodException {
-        /*
-        1. load file using inputFilePath
-        2. docId, String {entire document)
-        3. Using java reflection call
-         */
         System.out.println("Mapper Process Started");
-
-
         try
         {
             Socket socket = new Socket("127.0.0.1", this.ioPort);
             System.out.println("Connected to Server");
-
-            // takes input from terminal
-            DataInputStream in  = new DataInputStream(System.in);
-
             // sends output to the socket
             ObjectOutputStream out    = new ObjectOutputStream(socket.getOutputStream());
-            //out.writeUTF("Starting communication with Mapper");
-
-
             List<List> data = readFile();
             List<Integer> doc_ids = data.get(0);
             List<String> combined_data = data.get(1);
-
             Output output = new Output();
             for(int i=0; i<doc_ids.size(); i++)
             {
@@ -122,8 +107,6 @@ public class Mapper implements MRService{
             String output_filename = write(output);
             WorkerStatus workerStatus = new WorkerStatus(output_filename, MRConstant.SUCCESS, id);
             out.writeObject(workerStatus);
-
-
         }catch (Exception e){
             e.printStackTrace();
         }
