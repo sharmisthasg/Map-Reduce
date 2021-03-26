@@ -23,12 +23,12 @@ public class WordCount implements UDFInterface<StringComp, StringComp, StringCom
 
     @Override
     public void reduce(StringComp key, Iterable<StringComp> valueIter, Output output) {
-        IntComp result = new IntComp();
+        StringComp result = new StringComp();
         int sum = 0;
         for (StringComp val : valueIter) {
             sum += Integer.parseInt(val.getValue());
         }
-        result.setValue(sum);
+        result.setValue(String.valueOf(sum));
         output.write(key, result);
     }
 }
