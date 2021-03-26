@@ -16,8 +16,7 @@ public class WordCount implements UDFInterface<StringComp, StringComp, StringCom
         while (itr.hasMoreTokens()) {
             StringComp word = new StringComp();
             word.setValue(itr.nextToken().trim());
-            IntComp one = new IntComp(1);
-            output.write(word, one);
+            output.write(word, new StringComp("1"));
         }
     }
 

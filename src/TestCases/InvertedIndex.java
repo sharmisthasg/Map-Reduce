@@ -5,6 +5,8 @@ import DataType.StringComp;
 import Model.Output;
 import Service.UDFInterface;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 public class InvertedIndex implements UDFInterface<StringComp, StringComp, StringComp, StringComp> {
@@ -23,12 +25,18 @@ public class InvertedIndex implements UDFInterface<StringComp, StringComp, Strin
 
     @Override
     public void reduce(StringComp key, Iterable<StringComp> valueIter, Output output) {
-        StringComp result = new StringComp();
-        String result_concat="";
+        Set<String> res_set = new HashSet<>();
+
         for (StringComp val : valueIter) {
-            result_concat = result + val.getValue() + ",";
+            res_set.add(val.getValue());
         }
-        result.setValue(result_concat);
-        output.write(key, result);
+
+        String result_concat="";
+        for(String s: res_set)
+        {
+            result_concat = result_concat + s + ",";
+        }
+        result_concat=result_concat.substring(0,result_concat.length()-1);
+        output.write(key, new StringComp(result_concat));
     }
 }

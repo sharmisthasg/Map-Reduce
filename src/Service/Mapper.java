@@ -123,8 +123,8 @@ public class Mapper implements MRService{
 
             for (Map.Entry<Object,Object> entry : outputMap.entrySet())
             {
-                StringComp key = (StringComp)entry.getKey();
-                IntComp value = (IntComp) entry.getValue();
+                StringComp key = (StringComp) entry.getKey();
+                StringComp value = (StringComp) entry.getValue();
                 fileWriter.write(key.getValue()+" "+value.getValue()+"\n");
             }
             fileWriter.close();
