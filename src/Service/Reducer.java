@@ -125,7 +125,10 @@ public class Reducer implements MRService {
             {
                 StringComp key = (StringComp)entry.getKey();
                 StringComp value = (StringComp) entry.getValue();
-                fileWriter.write(key.getValue()+" "+value.getValue().trim()+"\n");
+                String output_write = key.getValue()+" "+value.getValue();
+                output_write = output_write.trim();
+                fileWriter.write(output_write);
+                fileWriter.write("\n");
             }
             fileWriter.close();
         }catch (Exception e){
