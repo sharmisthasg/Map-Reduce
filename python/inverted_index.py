@@ -16,7 +16,7 @@ for i,line in enumerate(f):
 
 f.close()
 
-f = open("inverted_index_output.txt","w")
+f = open("InvertedIndex.txt","w")
 for word in di:
 	f.write(word+" ")
 	for i,index in enumerate(di[word]):
