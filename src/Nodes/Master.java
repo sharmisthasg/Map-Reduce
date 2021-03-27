@@ -62,7 +62,7 @@ public class Master {
             int workerId = 0;
             System.out.println("Spawning Mapper Processes");
             while (startLine < numberOfLines) {
-                String commandList[] = {"java", "-cp", "out/production/MapReduceProject",
+                String commandList[] = {"java", "-cp", "src/",
                         MRConstant.WORKER_JAVA_LOCATION,
                         String.valueOf(workerId),
                         String.valueOf(this.ioPort),
@@ -110,7 +110,7 @@ public class Master {
             String reducerFilesStr = reducerInputFiles.stream().collect(Collectors.joining(","));
             int reducers = 0;
             while (reducers < Integer.parseInt(this.numOfWorkers)) {
-                String commandList[] = {"java", "-cp", "out/production/MapReduceProject",
+                String commandList[] = {"java", "-cp", "src/",
                         MRConstant.WORKER_JAVA_LOCATION,
                         String.valueOf(workerId),
                         String.valueOf(this.ioPort),
