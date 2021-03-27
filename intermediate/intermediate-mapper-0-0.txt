@@ -1,0 +1,16 @@
+<Is,3>
+<This,2>
+<This,1>
+<sentence,1>
+<is,1>
+<sentence,0>
+<2,1>
+<1,0>
+<sentence,2>
+<This,0>
+<not,4>
+<not,2>
+<x,4>
+<is,0>
+<3,2>
+<Is,4>

@@ -65,7 +65,10 @@ for udf in udfList:
     f.write("udf_class="+udf)
     f.close()
     os.system("java -cp src/ Main")
-    result &= compare("output/output-" + udf + ".txt","python/" + udf+".txt")
+    print("Comparing MapReduce Output File with files generated using python script")
+    result &= compare("output/output-" + udf + ".txt","test_scripts/" + udf+".txt")
+    if result:
+        print(udf + " Comparison is Successful")
     if not result:
         udf_failed = udf
         break
