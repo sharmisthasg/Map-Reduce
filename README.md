@@ -10,7 +10,6 @@ Directory Structure:
 6. test_script_automated.py/ - script for performing automated testing
     - Compiles Java code to generate .class files
     - Executes Java Map Reduce to generate output files for each of the testcase
-    - Executes Python test scripts for the same input for each of the testcase
     - Compares the output of Java Map Reduce and Python scripts for verification
 
 Test cases:
