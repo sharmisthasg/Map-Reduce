@@ -3,7 +3,7 @@ p1_mapreduce-team-9 created by GitHub Classroom
 
 Directory Structure:
 1. src/ - contains Map Reduce Java code
-2. data/ - contains input files
+2. data/ - contains input files (we have one input file - demo.txt for all test cases)
 3. output/ - contains output files from Map Reduce
 4. intermediate/ - contains intermediate files generated during Map Reduce (output of Mapper)
 5. test_scripts/ - contains Python scripts and their output files for each Map Reduce testcase
