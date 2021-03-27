@@ -30,6 +30,11 @@ def compare(mr_file_path, py_file_path):
     for line in mr_output_list:
         if line not in py_output_list:
             return False
+        
+    for line in py_output_list:
+        if line not in mr_output_list:
+            return False
+        
     return True
 
 

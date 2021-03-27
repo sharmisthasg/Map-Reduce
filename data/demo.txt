@@ -1,5 +1,4 @@
-This is sentence 1
-This is sentence 2
-This not sentence 3
-Is
-Is not x
+This is an example sentence which will be used in our Map Reduce Job and we feel it will work
+Here is another example sentence
+We have enjoyed doing the Map Reduce Project
+We feel that there is a lot to learn from this project

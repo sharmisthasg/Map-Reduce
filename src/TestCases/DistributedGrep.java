@@ -6,7 +6,7 @@ import Service.UDFInterface;
 
 public class DistributedGrep implements UDFInterface<StringComp, StringComp, StringComp, StringComp>
 {
-    String pattern="is";
+    String pattern="map";
     @Override
     public void map(StringComp key, StringComp value, Output output) {
 

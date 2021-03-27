@@ -1,3 +1,2 @@
-This is sentence 1
-This is sentence 2
-This not sentence 3
+this is an example sentence which will be used in our map reduce job and we feel it will work
+we have enjoyed doing the map reduce project

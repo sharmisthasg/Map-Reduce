@@ -52,6 +52,7 @@ public class Mapper implements MRService{
                 Scanner sc = new Scanner(inputFile);
                 while (sc.hasNextLine()) {
                     String data = sc.nextLine();
+                    data = preprocess(data);
                     combined_data.add(data);
                     doc_ids.add(doc_id);
                     doc_id++;
@@ -133,6 +134,10 @@ public class Mapper implements MRService{
             e.printStackTrace();
             return "";
         }
+    }
+
+    private String preprocess(String data){
+        return data.replaceAll("[^a-zA-Z0-9 ]", "").toLowerCase();
     }
 
     @Override
