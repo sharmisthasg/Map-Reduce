@@ -104,8 +104,8 @@ public class Mapper implements MRService{
             {
                 output = getMapped(output,doc_ids.get(i),combined_data.get(i));
             }
-            System.out.println(output);
             String output_filename = write(output);
+            System.out.println("Written to intermediate File");
             WorkerStatus workerStatus = new WorkerStatus(output_filename, MRConstant.SUCCESS, id);
             out.writeObject(workerStatus);
         }catch (Exception e){

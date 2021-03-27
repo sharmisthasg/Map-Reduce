@@ -35,7 +35,7 @@ public class Reducer implements MRService {
 
     @Override
     public void execute() {
-        System.out.println("Reducer Process Started???????");
+        System.out.println("Reducer Process Started");
 
         try {
             Socket socket = new Socket("127.0.0.1", this.ioPort);
@@ -106,6 +106,7 @@ public class Reducer implements MRService {
                 map_method.invoke(cls.newInstance(), new StringComp(key), values, output);
             }
             write(output);
+            System.out.println("Reducer has written to Output Files");
             WorkerStatus workerStatus = new WorkerStatus(this.outputFilePath, MRConstant.SUCCESS, id);
             out.writeObject(workerStatus);
 

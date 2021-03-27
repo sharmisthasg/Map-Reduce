@@ -57,6 +57,7 @@ udfList = ["WordCount", "DistributedGrep", "InvertedIndex"]
 result = True
 udf_failed = ''
 for udf in udfList:
+    print("-"*5 + udf + "-"*5)
     f = open("resources/config.properties","w")
     f.write("N=1\n")
     f.write("input_file_path=data/demo.txt\n")
@@ -68,7 +69,7 @@ for udf in udfList:
     if not result:
         udf_failed = udf
         break
-
+    print("-"*20)
 if(result):
     print("All the Test Cases have passed Successfully")
     print("MapReduce Works as Expected!")
