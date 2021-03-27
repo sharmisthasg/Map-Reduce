@@ -4,6 +4,8 @@ import Constants.MRConstant;
 import DataType.KeyValuePair;
 import Factory.WorkerFactory;
 import Service.MRService;
+import Service.Mapper;
+import Service.Reducer;
 
 import java.io.FileNotFoundException;
 import java.io.FileWriter;

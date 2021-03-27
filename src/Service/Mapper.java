@@ -12,6 +12,7 @@ import java.io.*;
 import java.lang.reflect.Method;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -120,7 +121,6 @@ public class Mapper implements MRService{
             FileWriter fileWriter = new FileWriter("intermediate/"+filename);
 
             Map<Object, Object> outputMap = output.getOutputMap();
-
             for (Map.Entry<Object,Object> entry : outputMap.entrySet())
             {
                 StringComp key = (StringComp) entry.getKey();
