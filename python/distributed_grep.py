@@ -10,5 +10,6 @@ grep_lines = textFile.filter(lambda row: "is" in row).collect()
 f = open("DistributedGrep.txt","w")
 for line in grep_lines:
 	f.write(line)
+	f.w
 	f.write("\n")
 f.close()
