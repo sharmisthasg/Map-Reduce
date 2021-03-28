@@ -7,7 +7,7 @@ Directory Structure:
 3. output/ - contains output files from Map Reduce
 4. intermediate/ - contains intermediate files generated during Map Reduce (output of Mapper)
 5. test_scripts/ - contains Python scripts and their output files for each Map Reduce testcase
-6. test_script_automated.py/ - script for performing automated testing
+6. test_script_automated.py - script for performing automated testing
     - Compiles Java code to generate .class files
     - Executes Java Map Reduce to generate output files for each of the testcase
     - Compares the output of Java Map Reduce and Python scripts for verification
