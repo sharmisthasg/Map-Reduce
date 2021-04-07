@@ -107,7 +107,7 @@ public class Reducer implements MRService {
             }
             write(output);
             System.out.println("Reducer has written to Output Files");
-            WorkerStatus workerStatus = new WorkerStatus(this.outputFilePath, MRConstant.SUCCESS, id);
+            WorkerStatus workerStatus = new WorkerStatus(null, MRConstant.SUCCESS, id);
             out.writeObject(workerStatus);
 
         } catch (Exception e) {
@@ -116,7 +116,7 @@ public class Reducer implements MRService {
     }
 
     public void write(Output output)
-    {
+    {//TODO: Writing to output File
         try {
             FileWriter fileWriter = new FileWriter(this.outputFilePath);
 

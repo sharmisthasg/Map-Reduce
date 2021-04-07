@@ -1,14 +1,15 @@
 package Model;
 
 import java.io.Serializable;
+import java.util.Map;
 
 public class WorkerStatus implements Serializable {
 
-    private String filePath;
+    private Map<String,String> filePath;
     private String status;
     private int workerId;
 
-    public WorkerStatus(String filePath, String status, int workerId) {
+    public WorkerStatus(Map<String,String> filePath, String status, int workerId) {
         this.filePath = filePath;
         this.status = status;
         this.workerId = workerId;
@@ -17,11 +18,11 @@ public class WorkerStatus implements Serializable {
     public WorkerStatus() {
     }
 
-    public String getFilePath() {
+    public Map<String, String> getFilePath() {
         return filePath;
     }
 
-    public void setFilePath(String filePath) {
+    public void setFilePath(Map<String, String> filePath) {
         this.filePath = filePath;
     }
 

@@ -26,19 +26,20 @@ public class Mapper implements MRService{
     private List<String> inputFilePath;
     private String udfClass;
     private String OUTPUT_PATH = "../../tmp";
-
-    //Tejas:
-    private ArrayList<KeyValuePair> kvpairs;
     private int offset;
     private int startLine;
+    private int numberOfWorkers;
 
 
-    public Mapper(int id, String workerType, int ioPort, List<String> inputFilePath, String udfClass) {
+    public Mapper(int id, String workerType, int ioPort, List<String> inputFilePath, String udfClass, String startLine, String offset, String numberOfWorkers) {
         this.id = id;
         this.ioPort = ioPort;
         this.workerType = workerType;
         this.inputFilePath = inputFilePath;
         this.udfClass = udfClass;
+        this.startLine=Integer.parseInt(startLine);
+        this.offset=Integer.parseInt(offset);
+        this.numberOfWorkers = Integer.parseInt(numberOfWorkers);
     }
 
     public List<List> readFile()
@@ -97,6 +98,7 @@ public class Mapper implements MRService{
             System.out.println("Connected to Server");
             // sends output to the socket
             ObjectOutputStream out    = new ObjectOutputStream(socket.getOutputStream());
+            deleteFilesForMapper(udfClass,id,numberOfWorkers);
             List<List> data = readFile();
             List<Integer> doc_ids = data.get(0);
             List<String> combined_data = data.get(1);
@@ -105,6 +107,7 @@ public class Mapper implements MRService{
             {
                 output = getMapped(output,doc_ids.get(i),combined_data.get(i));
             }
+            //TODO: Create a Map with Key as Reducer id in [0,numberOfWorkers-1] and output_filename as the value.
             String output_filename = write(output);
             System.out.println("Written to intermediate File");
             WorkerStatus workerStatus = new WorkerStatus(output_filename, MRConstant.SUCCESS, id);
@@ -115,10 +118,14 @@ public class Mapper implements MRService{
 
     }
 
+    private void deleteFilesForMapper(String udfClass, int id, int numberOfWorkers) {
+        //TODO: write this method to delete existing files for this udfClass
+    }
+
     public String write(Output output)
     {
         try {
-            String filename = "intermediate-mapper-"+String.valueOf(startLine)+"-"+String.valueOf(offset)+".txt";
+            String filename = udfClass+"-"+String.valueOf(id)+"-"+String.valueOf(offset)+".txt";
             FileWriter fileWriter = new FileWriter("intermediate/"+filename);
 
             Map<Object, Object> outputMap = output.getOutputMap();
@@ -149,7 +156,6 @@ public class Mapper implements MRService{
                 ", inputFilePath=" + inputFilePath +
                 ", udfClass='" + udfClass + '\'' +
                 ", OUTPUT_PATH='" + OUTPUT_PATH + '\'' +
-                ", kvpairs=" + kvpairs +
                 ", offset=" + offset +
                 ", startLine=" + startLine +
                 '}';

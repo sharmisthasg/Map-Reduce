@@ -43,7 +43,7 @@ public class Master {
             ServerSocket server = new ServerSocket(this.ioPort);
             System.out.println("Socket Server started");
             ActiveWorkers activeWorkers = ActiveWorkers.getInstance();
-            List<String> reducerInputFiles = new ArrayList<>();
+            Map<String,List<String>> reducerInputFiles = new HashMap<>();
             System.out.printf("Running Mapper!");
             runMapper(activeWorkers, server, reducerInputFiles);
             System.out.println("Mapper Processes are Done!");
@@ -54,7 +54,7 @@ public class Master {
         }
     }
 
-    private void runMapper(ActiveWorkers activeWorkers, ServerSocket server, List<String> reducerInputFiles) throws MapReduceException {
+    private void runMapper(ActiveWorkers activeWorkers, ServerSocket server, Map<String,List<String>> reducerInputFiles) throws MapReduceException {
         try {
             int numberOfLines = countLinesFile();
             int offset = (int) Math.ceil((double)numberOfLines/(double) Integer.parseInt(this.numOfWorkers));
@@ -88,13 +88,19 @@ public class Master {
             // takes input from the client socket
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
             String line = "";
-
+            Map<String,String> outputFileMap = null;
             while (!activeWorkers.isActiveWorker.isEmpty()) {
                 WorkerStatus status = (WorkerStatus) ois.readObject();
                 System.out.println("Received From Mapper ==> " + status);
                 if (MRConstant.SUCCESS.equals(status.getStatus())) {
                     activeWorkers.isActiveWorker.remove(status.getWorkerId());
-                    reducerInputFiles.add(status.getFilePath());
+                    outputFileMap = status.getFilePath();
+                    for(Map.Entry<String,String> outputFileEntry : outputFileMap.entrySet()){
+                        if(!reducerInputFiles.containsKey(outputFileEntry.getKey())){
+                            reducerInputFiles.put(outputFileEntry.getKey(),new ArrayList<>());
+                        }
+                        reducerInputFiles.get(outputFileEntry.getKey()).add(outputFileEntry.getValue());
+                    }
                 }
             }
             socket.close();
@@ -104,12 +110,13 @@ public class Master {
         }
     }
 
-    private void runReducer(ActiveWorkers activeWorkers, ServerSocket server, List<String> reducerInputFiles) throws MapReduceException {
+    private void runReducer(ActiveWorkers activeWorkers, ServerSocket server, Map<String,List<String>> reducerInputFiles) throws MapReduceException {
         try {
             int workerId = 0;
-            String reducerFilesStr = reducerInputFiles.stream().collect(Collectors.joining(","));
+            String reducerFilesStr = null;
             int reducers = 0;
             while (reducers < Integer.parseInt(this.numOfWorkers)) {
+                reducerFilesStr = reducerInputFiles.get(workerId).stream().collect(Collectors.joining(","));
                 String commandList[] = {"java", "-cp", "src/",
                         MRConstant.WORKER_JAVA_LOCATION,
                         String.valueOf(workerId),

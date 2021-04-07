@@ -30,8 +30,9 @@ public class Worker{
             String startLine = args[5];
             String offset = args[6];
             String outputFilePath = args[7];
+            String numberOfWorkers = args[8];
             WorkerFactory workerFactory = new WorkerFactory();
-            MRService mapperReducerService = workerFactory.getMapperReducerFactory(workerId, workerType, ioPort, inputFilePath, udfClass, outputFilePath);
+            MRService mapperReducerService = workerFactory.getMapperReducerFactory(workerId, workerType, ioPort, inputFilePath, udfClass, outputFilePath, startLine, offset, numberOfWorkers);
             mapperReducerService.toString();
             mapperReducerService.execute();
         }catch(Exception e){
