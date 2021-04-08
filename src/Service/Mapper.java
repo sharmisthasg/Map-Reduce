@@ -13,10 +13,7 @@ import java.lang.reflect.Method;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.sql.SQLOutput;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Mapper implements MRService{
 
@@ -107,9 +104,10 @@ public class Mapper implements MRService{
                 output = getMapped(output,doc_ids.get(i),combined_data.get(i));
             }
             //TODO: Create a Map with Key as Reducer id in [0,numberOfWorkers-1] and output_filename as the value.
-            String output_filename = write(output);
+            HashMap<String,String> output_map = write(output);
+
             System.out.println("Written to intermediate File");
-            WorkerStatus workerStatus = new WorkerStatus(output_filename, MRConstant.SUCCESS, id);
+            WorkerStatus workerStatus = new WorkerStatus(output_map, MRConstant.SUCCESS, id);
             out.writeObject(workerStatus);
         }catch (Exception e){
             e.printStackTrace();
@@ -117,24 +115,39 @@ public class Mapper implements MRService{
 
     }
 
-    public String write(Output output)
+    public void createIntermediateDirectory(String name)
+    {
+        File newDir = new File("/intermediate/"+udfClass);
+        if (!newDir.exists()){
+            newDir.mkdirs();
+        }
+    }
+
+    public HashMap<String,String> write(Output output)
     {
         try {
-            String filename = udfClass+"-"+String.valueOf(id)+"-"+String.valueOf(offset)+".txt";
-            FileWriter fileWriter = new FileWriter("intermediate/"+filename);
+
+            HashMap<String,String> output_map=new HashMap<String,String>();//Creating HashMap
+            String filename = udfClass+"-"+String.valueOf(id)+"-"+String.valueOf(offset);
+            //FileWriter fileWriter = new FileWriter("intermediate/"+filename);
 
             Map<Object, Object> outputMap = output.getOutputMap();
             for (Map.Entry<Object,Object> entry : outputMap.entrySet())
             {
                 StringComp key = (StringComp) entry.getKey();
                 StringComp value = (StringComp) entry.getValue();
-                fileWriter.write("<"+key.getValue()+","+value.getValue()+">\n");
+                int hashkey = hashKey(key.getValue());
+
+                String filepath = "intermediate/"+filename+"/"+String.valueOf(hashkey)+".txt";
+                FileWriter fw = new FileWriter(filepath);
+                fw.write("<"+key.getValue()+","+value.getValue()+">\n");
+                fw.close();
+                output_map.put(String.valueOf(hashkey),filepath);
             }
-            fileWriter.close();
-            return filename;
+            return output_map;
         }catch (Exception e){
             e.printStackTrace();
-            return "";
+            return new HashMap<String,String>();
         }
     }
 
@@ -154,5 +167,16 @@ public class Mapper implements MRService{
                 ", offset=" + offset +
                 ", startLine=" + startLine +
                 '}';
+    }
+
+    public int hashKey(String key){
+
+        int keysum=0;
+        for(int i=0;i<key.length();i++)
+        {
+            keysum+=Character.getNumericValue(key.charAt(i));
+        }
+
+        return keysum%numberOfWorkers;
     }
 }
