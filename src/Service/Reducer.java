@@ -105,7 +105,8 @@ public class Reducer implements MRService {
                 List<StringComp> values = combined_data.get(key);
                 map_method.invoke(cls.newInstance(), new StringComp(key), values, output);
             }
-            write(output);
+            TreeMap<StringComp, StringComp> sortedOutput = sortOutputKeys(output);
+            write(sortedOutput);
             System.out.println("Reducer has written to Output Files");
             WorkerStatus workerStatus = new WorkerStatus(null, MRConstant.SUCCESS, id);
             out.writeObject(workerStatus);
@@ -115,17 +116,25 @@ public class Reducer implements MRService {
         }
     }
 
-    public void write(Output output)
-    {//TODO: Writing to output File
+    private TreeMap<StringComp, StringComp> sortOutputKeys(Output output) {
+        TreeMap<StringComp, StringComp> sortedOutput = new TreeMap<>();
+        for(Map.Entry<Object,Object> entry : output.getOutputMap().entrySet()){
+            StringComp key = (StringComp) entry.getKey();
+            StringComp value = (StringComp) entry.getValue();
+            sortedOutput.put(key,value);
+        }
+        return sortedOutput;
+    }
+
+    public void write(TreeMap<StringComp, StringComp> sortedOutput)
+    {
+        String outputFileName = buildOutputFilePath();
         try {
-            FileWriter fileWriter = new FileWriter(this.outputFilePath+"/"+this.id);
-
-            Map<Object, Object> outputMap = output.getOutputMap();
-
-            for (Map.Entry<Object,Object> entry : outputMap.entrySet())
+            FileWriter fileWriter = new FileWriter(outputFileName);
+            for (Map.Entry<StringComp,StringComp> entry : sortedOutput.entrySet())
             {
-                StringComp key = (StringComp)entry.getKey();
-                StringComp value = (StringComp) entry.getValue();
+                StringComp key = entry.getKey();
+                StringComp value = entry.getValue();
                 String output_write = key.getValue()+" "+value.getValue();
                 output_write = output_write.trim();
                 fileWriter.write(output_write);
@@ -135,5 +144,16 @@ public class Reducer implements MRService {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    private String buildOutputFilePath() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.outputFilePath);
+        sb.append("/");
+        sb.append(this.udfClass);
+        sb.append("/");
+        sb.append(this.id);
+        sb.append(".txt");
+        return sb.toString();
     }
 }
