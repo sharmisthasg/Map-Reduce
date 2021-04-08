@@ -134,14 +134,8 @@ public class Mapper implements MRService{
                 StringComp key = (StringComp) entry.getKey();
                 StringComp value = (StringComp) entry.getValue();
                 int hashkey = hashKey(key.getValue());
-
-<<<<<<< HEAD
                 String filepath = "intermediate/"+filename + "-" + String.valueOf(hashkey)+".txt";
                 FileWriter fw = new FileWriter(filepath);
-=======
-                String filepath = "intermediate/"+filename+"-"+String.valueOf(hashkey)+".txt";
-                FileWriter fw = new FileWriter(filepath,true);
->>>>>>> 35cae35f40690c6ebdf1110a9c2396850477086d
                 fw.write("<"+key.getValue()+","+value.getValue()+">\n");
                 fw.close();
                 output_map.put(String.valueOf(hashkey),filepath);
