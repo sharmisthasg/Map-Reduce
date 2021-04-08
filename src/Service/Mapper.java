@@ -41,6 +41,7 @@ public class Mapper implements MRService{
 
     public List<List> readFile()
     {
+        //TODO: Startline and offset
         List<Integer> doc_ids = new ArrayList<>();
         List<String> combined_data = new ArrayList<>();
         try {
@@ -48,12 +49,16 @@ public class Mapper implements MRService{
             for (String filepath : inputFilePath) {
                 File inputFile = new File(filepath);
                 Scanner sc = new Scanner(inputFile);
+                int line_number = 0;
                 while (sc.hasNextLine()) {
                     String data = sc.nextLine();
-                    data = preprocess(data);
-                    combined_data.add(data);
-                    doc_ids.add(doc_id);
-                    doc_id++;
+                    if(line_number>=startLine && line_number<(startLine+offset)){
+                        data = preprocess(data);
+                        combined_data.add(data);
+                        doc_ids.add(doc_id);
+                        doc_id++;
+                    }
+                    line_number++;
                 }
                 sc.close();
             }
@@ -115,14 +120,6 @@ public class Mapper implements MRService{
 
     }
 
-    public void createIntermediateDirectory(String name)
-    {
-        File newDir = new File("/intermediate/"+udfClass);
-        if (!newDir.exists()){
-            newDir.mkdirs();
-        }
-    }
-
     public HashMap<String,String> write(Output output)
     {
         try {
@@ -138,8 +135,13 @@ public class Mapper implements MRService{
                 StringComp value = (StringComp) entry.getValue();
                 int hashkey = hashKey(key.getValue());
 
+<<<<<<< HEAD
                 String filepath = "intermediate/"+filename + "-" + String.valueOf(hashkey)+".txt";
                 FileWriter fw = new FileWriter(filepath);
+=======
+                String filepath = "intermediate/"+filename+"-"+String.valueOf(hashkey)+".txt";
+                FileWriter fw = new FileWriter(filepath,true);
+>>>>>>> 35cae35f40690c6ebdf1110a9c2396850477086d
                 fw.write("<"+key.getValue()+","+value.getValue()+">\n");
                 fw.close();
                 output_map.put(String.valueOf(hashkey),filepath);
