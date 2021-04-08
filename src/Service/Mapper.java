@@ -128,7 +128,7 @@ public class Mapper implements MRService{
         try {
 
             HashMap<String,String> output_map=new HashMap<String,String>();//Creating HashMap
-            String filename = udfClass+"-"+String.valueOf(id)+"-"+String.valueOf(offset);
+            String filename = udfClass+"/"+String.valueOf(id)+"-"+String.valueOf(offset);
             //FileWriter fileWriter = new FileWriter("intermediate/"+filename);
 
             Map<Object, Object> outputMap = output.getOutputMap();
@@ -138,7 +138,7 @@ public class Mapper implements MRService{
                 StringComp value = (StringComp) entry.getValue();
                 int hashkey = hashKey(key.getValue());
 
-                String filepath = "intermediate/"+filename+"/"+String.valueOf(hashkey)+".txt";
+                String filepath = "intermediate/"+filename + "-" + String.valueOf(hashkey)+".txt";
                 FileWriter fw = new FileWriter(filepath);
                 fw.write("<"+key.getValue()+","+value.getValue()+">\n");
                 fw.close();

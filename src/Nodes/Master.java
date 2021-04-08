@@ -84,26 +84,33 @@ public class Master {
                 startLine += offset;
                 workerId++;
             }
-            System.out.println("Waiting for a client/mapper to connect to port...");
-            Socket socket = server.accept();
-            System.out.println("Client/Mapper accepted");
+            //System.out.println("Waiting for a client/mapper to connect to port...");
+
+            //System.out.println("Client/Mapper accepted");
 
             // takes input from the client socket
-            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+            ObjectInputStream ois = null;
             String line = "";
             Map<String,String> outputFileMap = null;
+            Socket socket=null;
             while (!activeWorkers.isActiveWorker.isEmpty()) {
-                WorkerStatus status = (WorkerStatus) ois.readObject();
-                System.out.println("Received From Mapper ==> " + status);
-                if (MRConstant.SUCCESS.equals(status.getStatus())) {
-                    activeWorkers.isActiveWorker.remove(status.getWorkerId());
-                    outputFileMap = status.getFilePath();
-                    for(Map.Entry<String,String> outputFileEntry : outputFileMap.entrySet()){
-                        if(!reducerInputFiles.containsKey(outputFileEntry.getKey())){
-                            reducerInputFiles.put(outputFileEntry.getKey(),new ArrayList<>());
+                try {
+                    socket = server.accept();
+                    ois = new ObjectInputStream(socket.getInputStream());
+                    WorkerStatus status = (WorkerStatus) ois.readObject();
+                    System.out.println("Received From Mapper ==> " + status);
+                    if (MRConstant.SUCCESS.equals(status.getStatus())) {
+                        activeWorkers.isActiveWorker.remove(status.getWorkerId());
+                        outputFileMap = status.getFilePath();
+                        for (Map.Entry<String, String> outputFileEntry : outputFileMap.entrySet()) {
+                            if (!reducerInputFiles.containsKey(outputFileEntry.getKey())) {
+                                reducerInputFiles.put(outputFileEntry.getKey(), new ArrayList<>());
+                            }
+                            reducerInputFiles.get(outputFileEntry.getKey()).add(outputFileEntry.getValue());
                         }
-                        reducerInputFiles.get(outputFileEntry.getKey()).add(outputFileEntry.getValue());
                     }
+                }catch(EOFException eof){
+                    continue;
                 }
             }
             socket.close();
@@ -188,7 +195,7 @@ public class Master {
     }
 
     private void createIntermediateFolder(String udfClass, String outputFilePath) {
-        File newDir = new File(outputFilePath+"/"+udfClass);
+        File newDir = new File(MRConstant.MAP_OUTPUT_DIR + udfClass);
         if(!newDir.exists()){
             newDir.mkdirs();
         }
@@ -200,7 +207,7 @@ public class Master {
     }
 
     private void deleteOutputFiles(String udfClass, String outputFilePath) {
-        File dir = new File(MRConstant.MAP_OUTPUT_DIR + udfClass);
+        File dir = new File(outputFilePath+"/"+udfClass);
         File[] listOfFiles = dir.listFiles();
         if(listOfFiles==null || listOfFiles.length==0){
             return;
