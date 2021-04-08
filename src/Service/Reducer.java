@@ -118,7 +118,7 @@ public class Reducer implements MRService {
     public void write(Output output)
     {//TODO: Writing to output File
         try {
-            FileWriter fileWriter = new FileWriter(this.outputFilePath);
+            FileWriter fileWriter = new FileWriter(this.outputFilePath+"/"+this.id);
 
             Map<Object, Object> outputMap = output.getOutputMap();
 

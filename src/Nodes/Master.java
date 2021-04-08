@@ -71,7 +71,8 @@ public class Master {
                         this.udfClass,
                         String.valueOf(startLine),
                         String.valueOf(offset),
-                        ""
+                        "",
+                        this.numOfWorkers
                 };
                 // creating worker node process with workerType = Mapper
                 ProcessBuilder processBuilder = new ProcessBuilder(commandList);
@@ -126,7 +127,8 @@ public class Master {
                         this.udfClass,
                         "",
                         "",
-                        this.outputFilePath
+                        this.outputFilePath,
+                        this.numOfWorkers
                 };
                 // creating worker node process with workerType = Reducer
                 ProcessBuilder processBuilder = new ProcessBuilder(commandList);

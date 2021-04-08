@@ -98,7 +98,6 @@ public class Mapper implements MRService{
             System.out.println("Connected to Server");
             // sends output to the socket
             ObjectOutputStream out    = new ObjectOutputStream(socket.getOutputStream());
-            deleteFilesForMapper(udfClass,id,numberOfWorkers);
             List<List> data = readFile();
             List<Integer> doc_ids = data.get(0);
             List<String> combined_data = data.get(1);
@@ -116,10 +115,6 @@ public class Mapper implements MRService{
             e.printStackTrace();
         }
 
-    }
-
-    private void deleteFilesForMapper(String udfClass, int id, int numberOfWorkers) {
-        //TODO: write this method to delete existing files for this udfClass
     }
 
     public String write(Output output)
