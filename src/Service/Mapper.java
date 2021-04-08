@@ -41,6 +41,7 @@ public class Mapper implements MRService{
 
     public List<List> readFile()
     {
+        //TODO: Startline and offset
         List<Integer> doc_ids = new ArrayList<>();
         List<String> combined_data = new ArrayList<>();
         try {
@@ -48,12 +49,16 @@ public class Mapper implements MRService{
             for (String filepath : inputFilePath) {
                 File inputFile = new File(filepath);
                 Scanner sc = new Scanner(inputFile);
+                int line_number = 0;
                 while (sc.hasNextLine()) {
                     String data = sc.nextLine();
-                    data = preprocess(data);
-                    combined_data.add(data);
-                    doc_ids.add(doc_id);
-                    doc_id++;
+                    if(line_number>=startLine && line_number<(startLine+offset)){
+                        data = preprocess(data);
+                        combined_data.add(data);
+                        doc_ids.add(doc_id);
+                        doc_id++;
+                    }
+                    line_number++;
                 }
                 sc.close();
             }
@@ -115,20 +120,12 @@ public class Mapper implements MRService{
 
     }
 
-    public void createIntermediateDirectory(String name)
-    {
-        File newDir = new File("/intermediate/"+udfClass);
-        if (!newDir.exists()){
-            newDir.mkdirs();
-        }
-    }
-
     public HashMap<String,String> write(Output output)
     {
         try {
 
             HashMap<String,String> output_map=new HashMap<String,String>();//Creating HashMap
-            String filename = udfClass+"-"+String.valueOf(id)+"-"+String.valueOf(offset);
+            String filename = udfClass+"/"+String.valueOf(id)+"-"+String.valueOf(offset);
             //FileWriter fileWriter = new FileWriter("intermediate/"+filename);
 
             Map<Object, Object> outputMap = output.getOutputMap();
@@ -138,8 +135,8 @@ public class Mapper implements MRService{
                 StringComp value = (StringComp) entry.getValue();
                 int hashkey = hashKey(key.getValue());
 
-                String filepath = "intermediate/"+filename+"/"+String.valueOf(hashkey)+".txt";
-                FileWriter fw = new FileWriter(filepath);
+                String filepath = "intermediate/"+filename+"-"+String.valueOf(hashkey)+".txt";
+                FileWriter fw = new FileWriter(filepath,true);
                 fw.write("<"+key.getValue()+","+value.getValue()+">\n");
                 fw.close();
                 output_map.put(String.valueOf(hashkey),filepath);
