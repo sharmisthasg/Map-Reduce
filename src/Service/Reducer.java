@@ -42,9 +42,14 @@ public class Reducer implements MRService {
             System.out.println("Connected to Server");
             // sends output to the socket
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            if(inputFilePath.isEmpty()){
+                WorkerStatus workerStatus = new WorkerStatus(null, MRConstant.SUCCESS, id);
+                out.writeObject(workerStatus);
+                return;
+            }
             for(String filename: inputFilePath)
             {
-                File inputFile = new File("intermediate/"+filename);
+                File inputFile = new File(filename);
                 Scanner sc = new Scanner(inputFile);
                 while (sc.hasNextLine()) {
                     String line = sc.nextLine();
@@ -61,7 +66,7 @@ public class Reducer implements MRService {
             HashMap<String,List<StringComp>> combined_data=new HashMap<String,List<StringComp>>();
             for(String filename: inputFilePath)
             {
-                File inputFile = new File("intermediate/"+filename);
+                File inputFile = new File(filename);
                 Scanner sc = new Scanner(inputFile);
                 while (sc.hasNextLine())
                 {

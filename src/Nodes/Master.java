@@ -9,6 +9,7 @@ import ProcessStates.ActiveWorkers;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketOption;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,6 +51,7 @@ public class Master {
             runMapper(activeWorkers, server, reducerInputFiles);
             System.out.println("Mapper Processes are Done!");
             System.out.println("Running Reducer!");
+            System.out.println(reducerInputFiles);
             runReducer(activeWorkers, server, reducerInputFiles);
         }catch(IOException e){
             throw new MapReduceException(e.getMessage());
@@ -94,23 +96,19 @@ public class Master {
             Map<String,String> outputFileMap = null;
             Socket socket=null;
             while (!activeWorkers.isActiveWorker.isEmpty()) {
-                try {
-                    socket = server.accept();
-                    ois = new ObjectInputStream(socket.getInputStream());
-                    WorkerStatus status = (WorkerStatus) ois.readObject();
-                    System.out.println("Received From Mapper ==> " + status);
-                    if (MRConstant.SUCCESS.equals(status.getStatus())) {
-                        activeWorkers.isActiveWorker.remove(status.getWorkerId());
-                        outputFileMap = status.getFilePath();
-                        for (Map.Entry<String, String> outputFileEntry : outputFileMap.entrySet()) {
-                            if (!reducerInputFiles.containsKey(outputFileEntry.getKey())) {
-                                reducerInputFiles.put(outputFileEntry.getKey(), new ArrayList<>());
-                            }
-                            reducerInputFiles.get(outputFileEntry.getKey()).add(outputFileEntry.getValue());
+                socket = server.accept();
+                ois = new ObjectInputStream(socket.getInputStream());
+                WorkerStatus status = (WorkerStatus) ois.readObject();
+                System.out.println("Received From Mapper ==> " + status);
+                if (MRConstant.SUCCESS.equals(status.getStatus())) {
+                    activeWorkers.isActiveWorker.remove(status.getWorkerId());
+                    outputFileMap = status.getFilePath();
+                    for (Map.Entry<String, String> outputFileEntry : outputFileMap.entrySet()) {
+                        if (!reducerInputFiles.containsKey(outputFileEntry.getKey())) {
+                            reducerInputFiles.put(outputFileEntry.getKey(), new ArrayList<>());
                         }
+                        reducerInputFiles.get(outputFileEntry.getKey()).add(outputFileEntry.getValue());
                     }
-                }catch(EOFException eof){
-                    continue;
                 }
             }
             socket.close();
@@ -126,7 +124,7 @@ public class Master {
             String reducerFilesStr = null;
             int reducers = 0;
             while (reducers < Integer.parseInt(this.numOfWorkers)) {
-                reducerFilesStr = reducerInputFiles.get(workerId).stream().collect(Collectors.joining(","));
+                reducerFilesStr = String.join(",",reducerInputFiles.getOrDefault(String.valueOf(workerId),new ArrayList<>()));
                 String commandList[] = {"java", "-cp", "src/",
                         MRConstant.WORKER_JAVA_LOCATION,
                         String.valueOf(workerId),
@@ -147,13 +145,11 @@ public class Master {
                 workerId++;
                 reducers++;
             }
-            System.out.println("Waiting for a client/reducer to connect to port...");
-            Socket socket = server.accept();
-            System.out.println("Client/Reducer accepted");
-
-            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-
+            ObjectInputStream ois = null;
+            Socket socket = null;
             while (!activeWorkers.isActiveWorker.isEmpty()) {
+                socket = server.accept();
+                ois = new ObjectInputStream(socket.getInputStream());
                 Object obj = ois.readObject();
                 if(obj!=null) {
                     WorkerStatus status = (WorkerStatus) obj;

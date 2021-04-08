@@ -45,7 +45,7 @@ public class Mapper implements MRService{
         List<Integer> doc_ids = new ArrayList<>();
         List<String> combined_data = new ArrayList<>();
         try {
-            int doc_id=0;
+            int doc_id=startLine;
             for (String filepath : inputFilePath) {
                 File inputFile = new File(filepath);
                 Scanner sc = new Scanner(inputFile);
@@ -135,7 +135,7 @@ public class Mapper implements MRService{
                 StringComp value = (StringComp) entry.getValue();
                 int hashkey = hashKey(key.getValue());
                 String filepath = "intermediate/"+filename + "-" + String.valueOf(hashkey)+".txt";
-                FileWriter fw = new FileWriter(filepath);
+                FileWriter fw = new FileWriter(filepath,true);
                 fw.write("<"+key.getValue()+","+value.getValue()+">\n");
                 fw.close();
                 output_map.put(String.valueOf(hashkey),filepath);
