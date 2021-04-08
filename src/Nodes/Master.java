@@ -32,6 +32,8 @@ public class Master {
             this.outputFilePath = prop.getProperty("output_file_path");
             this.udfClass = prop.getProperty("udf_class");
             System.out.println("Properties Loaded => " + prop.values());
+            setup(this.udfClass,this.outputFilePath);
+            cleanUp(this.udfClass,this.outputFilePath);
             execute();
         }catch(IOException e){
             throw new MapReduceException(e.getMessage());
@@ -44,7 +46,7 @@ public class Master {
             System.out.println("Socket Server started");
             ActiveWorkers activeWorkers = ActiveWorkers.getInstance();
             Map<String,List<String>> reducerInputFiles = new HashMap<>();
-            System.out.printf("Running Mapper!");
+            System.out.println("Running Mapper!");
             runMapper(activeWorkers, server, reducerInputFiles);
             System.out.println("Mapper Processes are Done!");
             System.out.println("Running Reducer!");
@@ -143,7 +145,6 @@ public class Master {
             System.out.println("Client/Reducer accepted");
 
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-            String line = "";
 
             while (!activeWorkers.isActiveWorker.isEmpty()) {
                 Object obj = ois.readObject();
@@ -173,4 +174,57 @@ public class Master {
         sc.close();
         return count;
     }
+
+    private void setup(String udfClass, String outputFilePath) {
+        createOutputFolder(udfClass,outputFilePath);
+        createIntermediateFolder(udfClass,outputFilePath);
+    }
+
+    private void createOutputFolder(String udfClass, String outputFilePath) {
+        File newDir = new File(outputFilePath+"/"+udfClass);
+        if(!newDir.exists()){
+            newDir.mkdirs();
+        }
+    }
+
+    private void createIntermediateFolder(String udfClass, String outputFilePath) {
+        File newDir = new File(outputFilePath+"/"+udfClass);
+        if(!newDir.exists()){
+            newDir.mkdirs();
+        }
+    }
+
+    private void cleanUp(String udfClass, String outputFilePath) {
+        deleteIntermediateFiles(udfClass,outputFilePath);
+        deleteOutputFiles(udfClass,outputFilePath);
+    }
+
+    private void deleteOutputFiles(String udfClass, String outputFilePath) {
+        File dir = new File(MRConstant.MAP_OUTPUT_DIR + udfClass);
+        File[] listOfFiles = dir.listFiles();
+        if(listOfFiles==null || listOfFiles.length==0){
+            return;
+        }
+        for (File file: listOfFiles) {
+            if (!file.isDirectory()) {
+                file.delete();
+            }
+        }
+    }
+
+    private void deleteIntermediateFiles(String udfClass, String outputFilePath) {
+        File dir = new File(MRConstant.MAP_OUTPUT_DIR + udfClass);
+        File[] listOfFiles = dir.listFiles();
+        if(listOfFiles==null || listOfFiles.length==0){
+            return;
+        }
+        for (File file: listOfFiles) {
+            if (!file.isDirectory()) {
+                file.delete();
+            }
+        }
+    }
+
+
+
 }
