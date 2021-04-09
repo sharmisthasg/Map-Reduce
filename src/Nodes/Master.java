@@ -125,6 +125,7 @@ public class Master {
             int reducers = 0;
             while (reducers < Integer.parseInt(this.numOfWorkers)) {
                 reducerFilesStr = String.join(",",reducerInputFiles.getOrDefault(String.valueOf(workerId),new ArrayList<>()));
+                System.out.println("reducerFilesStr===>"+reducerFilesStr);
                 String commandList[] = {"java", "-cp", "src/",
                         MRConstant.WORKER_JAVA_LOCATION,
                         String.valueOf(workerId),
