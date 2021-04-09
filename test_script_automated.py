@@ -11,9 +11,6 @@ import glob
 # In[ ]:
 
 
-
-
-
 # In[2]:
 
 
@@ -40,9 +37,6 @@ def compare(mr_file_path, py_file_path):
 
 
 # In[ ]:
-
-
-
 
 
 # In[3]:
@@ -87,6 +81,9 @@ for udf in udfList:
     if not result:
         udf_failed = udf
         break
+    os.chdir("output/"+udf)
+    os.remove("outfile.txt")
+    os.chdir(sys.path[0])
     print("-"*20)
 if(result):
     print("All the Test Cases have passed Successfully")
@@ -96,7 +93,3 @@ else:
 
 
 # In[ ]:
-
-
-
-
