@@ -3,9 +3,10 @@
 
 # In[1]:
 
-
+import sys
 import os
-
+import shutil
+import glob
 
 # In[ ]:
 
@@ -57,21 +58,30 @@ udfList = ["WordCount", "DistributedGrep", "InvertedIndex"]
 
 
 # In[5]:
-
+N = input("Enter the number of desired mappers and reducers: ")
 
 result = True
 udf_failed = ''
 for udf in udfList:
     print("-"*5 + udf + "-"*5)
     f = open("resources/config.properties","w")
-    f.write("N=1\n")
+    f.write("N="+str(N)+"\n")
     f.write("input_file_path=data/demo.txt\n")
-    f.write("output_file_path=output/output-" + udf + ".txt\n")
+    f.write("output_file_path=output/\n")
     f.write("udf_class="+udf)
     f.close()
     os.system("java -cp src/ Main")
     print("Comparing MapReduce Output File with files generated using python script")
-    result &= compare("output/output-" + udf + ".txt","test_scripts/" + udf+".txt")
+    os.chdir("output/"+udf)
+    outfilename = "outfile.txt"
+    with open(outfilename, 'wb') as outfile:
+        for filename in glob.glob('*.txt'):
+            if filename == outfilename:
+                continue
+            with open(filename, 'rb') as readfile:
+                shutil.copyfileobj(readfile, outfile)
+    os.chdir(sys.path[0])
+    result &= compare("output/"+ udf + "/outfile.txt","test_scripts/" + udf+".txt")
     if result:
         print(udf + " Comparison is Successful")
     if not result:
