@@ -51,7 +51,7 @@ public class Master {
             runMapper(activeWorkers, server, reducerInputFiles);
             System.out.println("Mapper Processes are Done!");
             System.out.println("Running Reducer!");
-            System.out.println(reducerInputFiles);
+            //System.out.println(reducerInputFiles);
             runReducer(activeWorkers, server, reducerInputFiles);
         }catch(IOException e){
             throw new MapReduceException(e.getMessage());
@@ -134,7 +134,7 @@ public class Master {
                 makes sure that each key is matched to exactly one Reducer
                 */
                 reducerFilesStr = String.join(",",reducerInputFiles.getOrDefault(String.valueOf(workerId),new ArrayList<>()));
-                System.out.println("reducerFilesStr===>"+reducerFilesStr);
+                //System.out.println("reducerFilesStr===>"+reducerFilesStr);
                 String commandList[] = {"java", "-cp", "src/",
                         MRConstant.WORKER_JAVA_LOCATION,
                         String.valueOf(workerId),
