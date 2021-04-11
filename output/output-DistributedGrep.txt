@@ -1,2 +1,0 @@
-we have enjoyed doing the map reduce project
-this is an example sentence which will be used in our map reduce job and we feel it will work
