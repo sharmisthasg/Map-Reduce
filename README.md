@@ -19,8 +19,9 @@ Test cases:
 
 All UDFs are inside the folder src/TestCases/
 
-Command to run in root directory for automated testing:
-python3 test_script_automated.py
+Command to run in root directory for automated testing: </br>
+python3 test_script_automated.py </br>
+The user will then be prompted to enter the number of desired mappers and reducers, N. 
 
 Note:
 - For all testcases, we assume the line index in the input file as the document id
