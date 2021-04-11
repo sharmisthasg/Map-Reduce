@@ -1,7 +1,6 @@
-<map,1>
+<is,1>
 <our,1>
+<and,1>
 <in,1>
-<be,1>
-<an,1>
-<used,1>
-<sentence,1>
+<which,1>
+<we,1>

@@ -1,5 +1,6 @@
-<job,0>
-<reduce,0>
-<is,0>
-<and,0>
-<we,0>
+<map,0>
+<it,0>
+<will,0>
+<this,0>
+<will,0>
+<sentence,0>

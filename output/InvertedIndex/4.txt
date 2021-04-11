@@ -1,0 +1,6 @@
+another 1
+doing 2
+example 0,1
+feel 0,3
+job 0
+lot 3

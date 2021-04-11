@@ -62,11 +62,17 @@ public class Master {
         try {
             //counting number of lines in input File and splitting lines between number of workers
             int numberOfLines = countLinesFile();
+            // Calculating the offset i.e. the max number of lines that each worker should read which is equal to rounding down to the nearest integer of (number of lines)/(number of Workers)
             int offset = (int) Math.ceil((double)numberOfLines/(double) Integer.parseInt(this.numOfWorkers));
+            // When the particular Worker should start reading the file
             int startLine = 0;
             int workerId = 0;
             System.out.println("Spawning Mapper Processes");
             while (startLine < numberOfLines) {
+                //Last worker should read all the files so increasing the offset value
+                if(workerId+1 == Integer.parseInt(this.numOfWorkers)){
+                    offset += numberOfLines % Integer.parseInt(this.numOfWorkers);
+                }
                 String commandList[] = {"java", "-cp", "src/",
                         MRConstant.WORKER_JAVA_LOCATION,
                         String.valueOf(workerId),
@@ -99,7 +105,7 @@ public class Master {
                 System.out.println("Received From Mapper ==> " + status);
                 if (MRConstant.SUCCESS.equals(status.getStatus())) {
                     activeWorkers.isActiveWorker.remove(status.getWorkerId());
-                    //Getting intermediate File Path from Mapper
+                    //Getting intermediate File Path from Mapper which is a map containing the reducer_id that the file is expected to read from
                     outputFileMap = status.getFilePath();
                     for (Map.Entry<String, String> outputFileEntry : outputFileMap.entrySet()) {
                         if (!reducerInputFiles.containsKey(outputFileEntry.getKey())) {
@@ -122,6 +128,11 @@ public class Master {
             String reducerFilesStr = null;
             int reducers = 0;
             while (reducers < Integer.parseInt(this.numOfWorkers)) {
+                /*Sending the location of the files that a particular reducer should read.
+                As the reducerInputFiles map data structure contains the reducer_id as the key which will always be between 0 and N-1,
+                we can use the getOrDefault() function to get the corresponding intermediate files for the reducer. The hash function in the Mapper class
+                makes sure that each key is matched to exactly one Reducer
+                */
                 reducerFilesStr = String.join(",",reducerInputFiles.getOrDefault(String.valueOf(workerId),new ArrayList<>()));
                 System.out.println("reducerFilesStr===>"+reducerFilesStr);
                 String commandList[] = {"java", "-cp", "src/",
@@ -147,6 +158,7 @@ public class Master {
             ObjectInputStream ois = null;
             Socket socket = null;
             while (!activeWorkers.isActiveWorker.isEmpty()) {
+                // takes input from the client socket which is the reducer node in this case
                 socket = server.accept();
                 ois = new ObjectInputStream(socket.getInputStream());
                 Object obj = ois.readObject();

@@ -1,2 +1,3 @@
-<have,2>
+<project,2>
+<reduce,2>
 <the,2>

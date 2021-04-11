@@ -1,9 +1,7 @@
-a 3
-and 0
-doing 2
-is 0,1,3
-job 0
-lot 3
-project 2,3
-reduce 0,2
-we 0,2,3
+have 2
+here 1
+it 0
+map 0,2
+sentence 0,1
+this 0,3
+will 0

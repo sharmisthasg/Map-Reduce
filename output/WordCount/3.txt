@@ -1,4 +1,4 @@
-example 2
-it 1
-learn 1
+an 1
+from 1
+to 1
 work 1

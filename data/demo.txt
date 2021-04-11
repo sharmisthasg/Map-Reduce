@@ -2,3 +2,16 @@ This is an example sentence which will be used in our Map Reduce Job and we feel
 Here is another example sentence
 We have enjoyed doing the Map Reduce Project
 We feel that there is a lot to learn from this project
+This is the second iteration of the example sentence which will be used in our Map Reduce Job and we feel it will work
+Here is another example sentence
+We have enjoyed doing the Map Reduce Project for this second time
+We feel that there is a lot to learn from this project
+This is the third iteration of the example sentence which will be used in our Map Reduce Job and we feel it will work
+Here is another example sentence
+We have enjoyed doing the Map Reduce Project for this third time
+We feel that there is a lot to learn from this project
+This is the fourth iteration of the example sentence which will be used in our Map Reduce Job and we feel it will work
+Here is another example sentence
+We have enjoyed doing the Map Reduce Project for this fourth time
+We feel that there is a lot to learn from this project
+We have copied these lines multiple times just to see what we get in this map reduce job

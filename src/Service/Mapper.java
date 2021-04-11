@@ -39,9 +39,11 @@ public class Mapper implements MRService{
         this.numberOfWorkers = Integer.parseInt(numberOfWorkers);
     }
 
+    /*
+    This function reads the lines in the file between the startline and startline + offset value
+     */
     public List<List> readFile()
     {
-        //TODO: Startline and offset
         List<Integer> doc_ids = new ArrayList<>();
         List<String> combined_data = new ArrayList<>();
         try {

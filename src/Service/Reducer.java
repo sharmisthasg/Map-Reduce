@@ -40,7 +40,6 @@ public class Reducer implements MRService {
         try {
             Socket socket = new Socket("127.0.0.1", this.ioPort);
             System.out.println("Connected to Server");
-            // sends output to the socket
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             if(inputFilePath.isEmpty()){
                 WorkerStatus workerStatus = new WorkerStatus(null, MRConstant.SUCCESS, id);
@@ -62,7 +61,7 @@ public class Reducer implements MRService {
                     }
                 }
             }
-
+            //Reading data from the different input files received from the Master
             HashMap<String,List<StringComp>> combined_data=new HashMap<String,List<StringComp>>();
             for(String filename: inputFilePath)
             {
@@ -96,6 +95,7 @@ public class Reducer implements MRService {
                 sc.close();
             }
 
+            //Using Java Reflection to invoke the UDF Classes
             Class cls = Class.forName("TestCases."+udfClass);
             Class args[] = new Class[3];
             args[0] = StringComp.class;
@@ -111,6 +111,8 @@ public class Reducer implements MRService {
                 map_method.invoke(cls.newInstance(), new StringComp(key), values, output);
             }
             TreeMap<StringComp, StringComp> sortedOutput = sortOutputKeys(output);
+
+            //Reducer is writing to one output file with the workerId as the file name
             write(sortedOutput);
             System.out.println("Reducer has written to Output Files");
             WorkerStatus workerStatus = new WorkerStatus(null, MRConstant.SUCCESS, id);
