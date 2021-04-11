@@ -25,7 +25,7 @@ public class Worker{
             int ioPort = Integer.parseInt(args[1]);
             String workerType = args[2];
             String inputFilePathStr = args[3];
-            List<String> inputFilePath = inputFilePathStr.isBlank()? new ArrayList<>(): Arrays.asList(inputFilePathStr.split(","));
+            List<String> inputFilePath = inputFilePathStr.isEmpty()? new ArrayList<>(): Arrays.asList(inputFilePathStr.split(","));
             String udfClass = args[4];
             String startLine = args[5];
             String offset = args[6];
