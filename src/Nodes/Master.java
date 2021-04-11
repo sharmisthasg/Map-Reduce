@@ -60,6 +60,7 @@ public class Master {
 
     private void runMapper(ActiveWorkers activeWorkers, ServerSocket server, Map<String,List<String>> reducerInputFiles) throws MapReduceException {
         try {
+            //counting number of lines in input File and splitting lines between number of workers
             int numberOfLines = countLinesFile();
             int offset = (int) Math.ceil((double)numberOfLines/(double) Integer.parseInt(this.numOfWorkers));
             int startLine = 0;
@@ -86,22 +87,19 @@ public class Master {
                 startLine += offset;
                 workerId++;
             }
-            //System.out.println("Waiting for a client/mapper to connect to port...");
-
-            //System.out.println("Client/Mapper accepted");
-
-            // takes input from the client socket
             ObjectInputStream ois = null;
             String line = "";
             Map<String,String> outputFileMap = null;
             Socket socket=null;
             while (!activeWorkers.isActiveWorker.isEmpty()) {
+                // takes input from the client socket
                 socket = server.accept();
                 ois = new ObjectInputStream(socket.getInputStream());
                 WorkerStatus status = (WorkerStatus) ois.readObject();
                 System.out.println("Received From Mapper ==> " + status);
                 if (MRConstant.SUCCESS.equals(status.getStatus())) {
                     activeWorkers.isActiveWorker.remove(status.getWorkerId());
+                    //Getting intermediate File Path from Mapper
                     outputFileMap = status.getFilePath();
                     for (Map.Entry<String, String> outputFileEntry : outputFileMap.entrySet()) {
                         if (!reducerInputFiles.containsKey(outputFileEntry.getKey())) {
