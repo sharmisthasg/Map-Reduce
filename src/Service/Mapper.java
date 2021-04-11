@@ -93,11 +93,11 @@ public class Mapper implements MRService{
 
     @Override
     public void execute() throws FileNotFoundException, NoSuchMethodException {
-        System.out.println("Mapper Process Started");
+        System.out.println("Mapper Process Started. ID: "+String.valueOf(id));
         try
         {
             Socket socket = new Socket("127.0.0.1", this.ioPort);
-            System.out.println("Connected to Server");
+            System.out.println(String.valueOf(id) + ": Connected to Server");
             // sends output to the socket
             ObjectOutputStream out    = new ObjectOutputStream(socket.getOutputStream());
             List<List> data = readFile();
@@ -111,7 +111,7 @@ public class Mapper implements MRService{
             //TODO: Create a Map with Key as Reducer id in [0,numberOfWorkers-1] and output_filename as the value.
             HashMap<String,String> output_map = write(output);
 
-            System.out.println("Written to intermediate File");
+            System.out.println(String.valueOf(id) + ": Written to intermediate File");
             WorkerStatus workerStatus = new WorkerStatus(output_map, MRConstant.SUCCESS, id);
             out.writeObject(workerStatus);
         }catch (Exception e){
