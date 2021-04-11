@@ -1,0 +1,11 @@
+<feel,11>
+<another,9>
+<example,8>
+<job,8>
+<example,9>
+<third,10>
+<lot,11>
+<feel,8>
+<third,8>
+<doing,10>
+<of,8>

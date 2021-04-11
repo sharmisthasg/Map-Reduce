@@ -1,0 +1,2 @@
+<we feel that there is a lot to learn from this project,0>
+<we have enjoyed doing the map reduce project,1>

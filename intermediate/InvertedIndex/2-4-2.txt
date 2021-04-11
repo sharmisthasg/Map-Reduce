@@ -1,0 +1,13 @@
+<sentence,8>
+<sentence,9>
+<map,8>
+<this,10>
+<will,8>
+<have,10>
+<iteration,8>
+<map,10>
+<this,11>
+<it,8>
+<here,9>
+<this,8>
+<will,8>

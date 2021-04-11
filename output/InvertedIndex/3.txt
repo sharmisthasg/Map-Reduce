@@ -1,4 +1,6 @@
 an 0
-from 3
-to 3
-work 0
+from 11,3,15,7
+time 14,6,10
+to 11,3,15,16,7
+what 16
+work 0,12,4,8

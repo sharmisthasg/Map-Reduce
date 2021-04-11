@@ -1,0 +1,8 @@
+<feel,0>
+<lot,3>
+<job,0>
+<feel,3>
+<example,1>
+<example,0>
+<doing,2>
+<another,1>

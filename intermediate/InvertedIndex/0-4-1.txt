@@ -1,0 +1,12 @@
+<we,3>
+<is,0>
+<we,2>
+<in,0>
+<is,1>
+<and,0>
+<our,0>
+<we,0>
+<there,3>
+<enjoyed,2>
+<is,3>
+<which,0>

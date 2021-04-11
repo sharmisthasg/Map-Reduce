@@ -1,0 +1,10 @@
+<project,3>
+<be,0>
+<used,0>
+<that,3>
+<learn,3>
+<reduce,2>
+<reduce,0>
+<project,2>
+<a,3>
+<the,2>
