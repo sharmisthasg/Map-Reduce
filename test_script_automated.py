@@ -35,7 +35,36 @@ def compare(mr_file_path, py_file_path):
         
     return True
 
+def list_of_sorted_elements(a):
+    t = a.split(",")
+    u = t[0].split(" ")
+    for i in range(1,len(t)):
+        u.append(t[i].strip())
+    u = u.sort()
+    return u
 
+def compare_inverted_index(outfile_path, py_file_path):
+    outfile = open(outfile_path)
+    out_list = []
+    for line in outfile:
+        sorted = list_of_sorted_elements(line)
+        out_list.append(sorted)
+
+    pythonfile = open(py_file_path)
+    python_list = []
+    for line in pythonfile:
+        sorted = list_of_sorted_elements(line)
+        python_list.append(sorted)
+
+    for line in out_list:
+        if line not in python_list:
+            return False
+
+    for line in python_list:
+        if line not in out_list:
+            return False
+
+    return True
 # In[ ]:
 
 
@@ -75,7 +104,10 @@ for udf in udfList:
             with open(filename, 'rb') as readfile:
                 shutil.copyfileobj(readfile, outfile)
     os.chdir(sys.path[0])
-    result &= compare("output/"+ udf + "/outfile.txt","test_scripts/" + udf+".txt")
+    if udf == "InvertedIndex":
+        result = compare_inverted_index("output/"+ udf + "/outfile.txt","test_scripts/" + udf+".txt")
+    else:
+        result &= compare("output/"+ udf + "/outfile.txt","test_scripts/" + udf+".txt")
     if result:
         print(udf + " Comparison is Successful")
     if not result:
