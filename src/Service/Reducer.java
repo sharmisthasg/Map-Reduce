@@ -35,11 +35,11 @@ public class Reducer implements MRService {
 
     @Override
     public void execute() {
-        System.out.println("Reducer Process Started");
+        System.out.println("Reducer Process Started. ID: "+String.valueOf(id));
 
         try {
             Socket socket = new Socket("127.0.0.1", this.ioPort);
-            System.out.println("Connected to Server");
+            System.out.println(String.valueOf(id) + ": Connected to Server");
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             if(inputFilePath.isEmpty()){
                 WorkerStatus workerStatus = new WorkerStatus(null, MRConstant.SUCCESS, id);
@@ -114,7 +114,7 @@ public class Reducer implements MRService {
 
             //Reducer is writing to one output file with the workerId as the file name
             write(sortedOutput);
-            System.out.println("Reducer has written to Output Files");
+            System.out.println(String.valueOf(id) + ": Reducer has written to Output Files");
             WorkerStatus workerStatus = new WorkerStatus(null, MRConstant.SUCCESS, id);
             out.writeObject(workerStatus);
 
