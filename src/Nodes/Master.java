@@ -88,6 +88,7 @@ public class Master {
                 // creating worker node process with workerType = Mapper
                 ProcessBuilder processBuilder = new ProcessBuilder(commandList);
                 processBuilder.inheritIO();
+                //starting process
                 Process process = processBuilder.start();
                 activeWorkers.isActiveWorker.add(workerId);
                 startLine += offset;
