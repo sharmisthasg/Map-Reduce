@@ -31,8 +31,12 @@ public class Worker{
             String offset = args[6];
             String outputFilePath = args[7];
             String numberOfWorkers = args[8];
+            int nodeToCrash = Integer.parseInt(args[9]);
+            boolean forceWorkerCrash = MRConstant.TRUE.equals(args[10]);
+            boolean forceWorkerException = MRConstant.TRUE.equals(args[11]);
             WorkerFactory workerFactory = new WorkerFactory();
-            MRService mapperReducerService = workerFactory.getMapperReducerFactory(workerId, workerType, ioPort, inputFilePath, udfClass, outputFilePath, startLine, offset, numberOfWorkers);
+            MRService mapperReducerService = workerFactory.getMapperReducerFactory(workerId, workerType, ioPort, inputFilePath, udfClass, outputFilePath, startLine, offset,
+                    numberOfWorkers, nodeToCrash, forceWorkerCrash, forceWorkerException);
             mapperReducerService.toString();
             mapperReducerService.execute();
         }catch(Exception e){

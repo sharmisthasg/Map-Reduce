@@ -1,6 +1,7 @@
 package Service;
 
 import Constants.MRConstant;
+import CustomException.MapReduceException;
 import DataType.IntComp;
 import DataType.KeyValuePair;
 import DataType.StringComp;
@@ -26,9 +27,15 @@ public class Mapper implements MRService{
     private int offset;
     private int startLine;
     private int numberOfWorkers;
+    private boolean forceWorkerException;
+    private boolean forceWorkerCrash;
+    private int nodeToCrash;
 
 
-    public Mapper(int id, String workerType, int ioPort, List<String> inputFilePath, String udfClass, String startLine, String offset, String numberOfWorkers) {
+    public Mapper(int id, String workerType, int ioPort,
+                  List<String> inputFilePath, String udfClass,
+                  String startLine, String offset, String numberOfWorkers,
+                  int nodeToCrash, boolean forceWorkerCrash, boolean forceWorkerException) {
         this.id = id;
         this.ioPort = ioPort;
         this.workerType = workerType;
@@ -37,6 +44,9 @@ public class Mapper implements MRService{
         this.startLine=Integer.parseInt(startLine);
         this.offset=Integer.parseInt(offset);
         this.numberOfWorkers = Integer.parseInt(numberOfWorkers);
+        this.nodeToCrash = nodeToCrash;
+        this.forceWorkerCrash = forceWorkerCrash;
+        this.forceWorkerException = forceWorkerException;
     }
 
     /*
@@ -94,11 +104,18 @@ public class Mapper implements MRService{
     }
 
     @Override
-    public void execute() throws FileNotFoundException, NoSuchMethodException {
+    public void execute() throws IOException, NoSuchMethodException {
         System.out.println("Mapper Process Started. ID: "+String.valueOf(id));
-        try
-        {
-            Socket socket = new Socket("127.0.0.1", this.ioPort);
+        Socket socket = new Socket("127.0.0.1", this.ioPort);
+        System.out.println(String.valueOf(id) + ": Connected to Server");
+        try {
+            if(this.forceWorkerCrash && this.id == this.nodeToCrash){
+                System.out.println("Will be crashing this node: " + this.id + " as the node selected to crash for testing is: " + this.nodeToCrash);
+                System.exit(0);
+            }else if(this.forceWorkerException && this.id == this.nodeToCrash){
+                System.out.println("Will be throwing exception for this node: " + this.id + " as the node selected to throw exception for testing is: " + this.nodeToCrash);
+                throw new MapReduceException("Forced Exception to Simulate Fault");
+            }
             System.out.println(String.valueOf(id) + ": Connected to Server");
             // sends output to the socket
             ObjectOutputStream out    = new ObjectOutputStream(socket.getOutputStream());
@@ -117,6 +134,9 @@ public class Mapper implements MRService{
             WorkerStatus workerStatus = new WorkerStatus(output_map, MRConstant.SUCCESS, id);
             out.writeObject(workerStatus);
         }catch (Exception e){
+            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            WorkerStatus workerStatus = new WorkerStatus(null, MRConstant.FAILURE, id);
+            out.writeObject(workerStatus);
             e.printStackTrace();
         }
 

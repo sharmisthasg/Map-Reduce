@@ -1,6 +1,7 @@
 package Service;
 
 import Constants.MRConstant;
+import CustomException.MapReduceException;
 import DataType.IntComp;
 import DataType.StringComp;
 import Model.Output;
@@ -21,9 +22,13 @@ public class Reducer implements MRService {
     private List<String> keys;
     private String udfClass;
     private String outputFilePath;
+    private int numberOfWorkers;
+    private boolean forceWorkerException;
+    private boolean forceWorkerCrash;
+    private int nodeToCrash;
 
     public Reducer(int id, String workerType, int ioPort, List<String> inputFilePath,
-                   String udfClass, String outputFilePath) {
+                   String udfClass, String outputFilePath, String numberOfWorkers,int nodeToCrash, boolean forceWorkerCrash, boolean forceWorkerException) {
         this.id = id;
         this.ioPort = ioPort;
         this.workerType = workerType;
@@ -31,15 +36,25 @@ public class Reducer implements MRService {
         this.udfClass = udfClass;
         this.keys = new ArrayList<>();
         this.outputFilePath=outputFilePath;
+        this.numberOfWorkers = Integer.parseInt(numberOfWorkers);
+        this.nodeToCrash = nodeToCrash;
+        this.forceWorkerCrash = forceWorkerCrash;
+        this.forceWorkerException = forceWorkerException;
     }
 
     @Override
-    public void execute() {
+    public void execute() throws IOException {
         System.out.println("Reducer Process Started. ID: "+String.valueOf(id));
-
+        Socket socket = new Socket("127.0.0.1", this.ioPort);
+        System.out.println(String.valueOf(id) + ": Connected to Server");
         try {
-            Socket socket = new Socket("127.0.0.1", this.ioPort);
-            System.out.println(String.valueOf(id) + ": Connected to Server");
+            if(this.forceWorkerCrash && this.id == this.nodeToCrash){
+                System.out.println("Will be crashing this node: " + this.id + " as the node selected to crash for testing is: " + this.nodeToCrash);
+                System.exit(0);
+            }else if(this.forceWorkerException && this.id == this.nodeToCrash){
+                System.out.println("Will be throwing exception for this node: " + this.id + " as the node selected to throw exception for testing is: " + this.nodeToCrash);
+                throw new MapReduceException("Forced Exception to Simulate Fault");
+            }
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             if(inputFilePath.isEmpty()){
                 WorkerStatus workerStatus = new WorkerStatus(null, MRConstant.SUCCESS, id);
@@ -119,6 +134,9 @@ public class Reducer implements MRService {
             out.writeObject(workerStatus);
 
         } catch (Exception e) {
+            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            WorkerStatus workerStatus = new WorkerStatus(null, MRConstant.FAILURE, id);
+            out.writeObject(workerStatus);
             e.printStackTrace();
         }
     }
@@ -133,8 +151,7 @@ public class Reducer implements MRService {
         return sortedOutput;
     }
 
-    public void write(TreeMap<StringComp, StringComp> sortedOutput)
-    {
+    public void write(TreeMap<StringComp, StringComp> sortedOutput) {
         String outputFileName = buildOutputFilePath();
         try {
             FileWriter fileWriter = new FileWriter(outputFileName);
