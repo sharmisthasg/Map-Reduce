@@ -96,7 +96,7 @@ for udf in udfList:
     f.write("input_file_path=data/demo.txt\n")
     f.write("output_file_path=output/\n")
     f.write("udf_class="+udf+"\n")
-    f.write("crash_worker=false/\n")
+    f.write("crash_worker=false\n")
     f.write("exception_worker=false")
     f.close()
     os.system("java -cp src/ Main")
@@ -133,7 +133,7 @@ else:
 
 
 print("-------------------------")
-print("Checking Fault Tolerance")
+print("Checking Fault Tolerance with Crash")
 
 result = True
 udf_failed = ''
@@ -144,8 +144,8 @@ for udf in udfList:
     f.write("input_file_path=data/demo.txt\n")
     f.write("output_file_path=output/\n")
     f.write("udf_class="+udf+"\n")
-    f.write("crash_worker=false/\n")
-    f.write("exception_worker=true")
+    f.write("crash_worker=true\n")
+    f.write("exception_worker=false")
     f.close()
     os.system("java -cp src/ Main")
     print("Comparing MapReduce Output File with files generated using python script")
@@ -180,3 +180,50 @@ else:
     print("Test Case Failed: ",udf_failed)
 
 # In[ ]:
+
+print("-------------------------")
+print("Checking Fault Tolerance with Exception")
+
+result = True
+udf_failed = ''
+for udf in udfList:
+    print("-"*5 + udf + "-"*5)
+    f = open("resources/config.properties","w")
+    f.write("N="+str(N)+"\n")
+    f.write("input_file_path=data/demo.txt\n")
+    f.write("output_file_path=output/\n")
+    f.write("udf_class="+udf+"\n")
+    f.write("crash_worker=false\n")
+    f.write("exception_worker=true")
+    f.close()
+    os.system("java -cp src/ Main")
+    print("Comparing MapReduce Output File with files generated using python script")
+    os.chdir("output/"+udf)
+    outfilename = "outfile.txt"
+    # The following block of code concatenates the outputs of all text files into a single file called outfile.txt
+    with open(outfilename, 'wb') as outfile:
+        for filename in glob.glob('*.txt'):
+            if filename == outfilename:
+                continue
+            with open(filename, 'rb') as readfile:
+                shutil.copyfileobj(readfile, outfile)
+    os.chdir(sys.path[0])
+    if udf == "InvertedIndex":
+        result = compare_inverted_index("output/"+ udf + "/outfile.txt","test_scripts/" + udf+".txt")
+    else:
+        result &= compare("output/"+ udf + "/outfile.txt","test_scripts/" + udf+".txt")
+    if result:
+        print(udf + " Comparison is Successful")
+    if not result:
+        udf_failed = udf
+        break
+    os.chdir("output/"+udf)
+    # The following command deletes outfile.txt which was used for comparison
+    os.remove("outfile.txt")
+    os.chdir(sys.path[0])
+    print("-"*20)
+if(result):
+    print("All the Test Cases have passed Successfully")
+    print("MapReduce Works as Expected!")
+else:
+    print("Test Case Failed: ",udf_failed)
