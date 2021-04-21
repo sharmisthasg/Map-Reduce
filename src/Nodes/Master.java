@@ -151,10 +151,6 @@ public class Master {
                         }
                         reducerInputFiles.get(outputFileEntry.getKey()).add(outputFileEntry.getValue());
                     }
-                }else{
-                    failedWorker.put(status.getWorkerId(),activeWorkers.isActiveWorker.get(status.getWorkerId()));
-                    workerFailed=true;
-                    activeWorkers.isActiveWorker.remove(status.getWorkerId());
                 }
             }
             while(workerFailed){
@@ -240,10 +236,6 @@ public class Master {
                     }
                     reducerInputFiles.get(outputFileEntry.getKey()).add(outputFileEntry.getValue());
                 }
-            }else{
-                failedWorker.put(status.getWorkerId(),activeWorkers.isActiveWorker.get(status.getWorkerId()));
-                workerFailed=true;
-                activeWorkers.isActiveWorker.remove(status.getWorkerId());
             }
         }
         if(workerFailed){
@@ -324,11 +316,7 @@ public class Master {
                 if(obj!=null) {
                     WorkerStatus status = (WorkerStatus) obj;
                     System.out.println("Received From Reducer ==> " + status);
-                    if (MRConstant.FAILURE.equals(status.getStatus())) {
-                        failedWorker.put(status.getWorkerId(),activeWorkers.isActiveWorker.get(status.getWorkerId()));
-                        workerFailed=true;
-                        activeWorkers.isActiveWorker.remove(status.getWorkerId());
-                    }else{
+                    if (MRConstant.SUCCESS.equals(status.getStatus())) {
                         activeWorkers.isActiveWorker.remove(status.getWorkerId());
                     }
                 }
@@ -345,6 +333,7 @@ public class Master {
 
     private boolean respawnReducerProcess(Map<Integer, WorkerDetails> failedWorker, ActiveWorkers activeWorkers, ServerSocket server) throws IOException, ClassNotFoundException {
         System.out.println("ReSpawning Process");
+        System.out.println("FailedWorker==>"+ failedWorker);
         Map.Entry<Integer,WorkerDetails> entry = failedWorker.entrySet().iterator().next();
         int workerId = entry.getKey();
         WorkerDetails oldWorkerDetails = entry.getValue();
@@ -407,11 +396,7 @@ public class Master {
             if(obj!=null) {
                 WorkerStatus status = (WorkerStatus) obj;
                 System.out.println("Received From Reducer ==> " + status);
-                if (MRConstant.FAILURE.equals(status.getStatus())) {
-                    failedWorker.put(status.getWorkerId(),activeWorkers.isActiveWorker.get(status.getWorkerId()));
-                    activeWorkers.isActiveWorker.remove(status.getWorkerId());
-                    workerFailed=true;
-                }else{
+                if (MRConstant.SUCCESS.equals(status.getStatus())) {
                     activeWorkers.isActiveWorker.remove(status.getWorkerId());
                 }
             }
