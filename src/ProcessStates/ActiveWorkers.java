@@ -15,6 +15,7 @@ public class ActiveWorkers {
     private static ActiveWorkers activeWorkers = null;
     public Map<Integer, WorkerDetails> isActiveWorker;
     public static ActiveWorkers getInstance(){
+        //returns ActiveWorkers instances
         if(activeWorkers==null){
             activeWorkers = new ActiveWorkers();
         }
