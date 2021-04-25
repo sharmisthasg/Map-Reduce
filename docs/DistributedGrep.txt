@@ -1,0 +1,9 @@
+this is an example sentence which will be used in our map reduce job and we feel it will work
+we have enjoyed doing the map reduce project
+this is the second iteration of the example sentence which will be used in our map reduce job and we feel it will work
+we have enjoyed doing the map reduce project for this second time
+this is the third iteration of the example sentence which will be used in our map reduce job and we feel it will work
+we have enjoyed doing the map reduce project for this third time
+this is the fourth iteration of the example sentence which will be used in our map reduce job and we feel it will work
+we have enjoyed doing the map reduce project for this fourth time
+we have copied these lines multiple times just to see what we get in this map reduce job

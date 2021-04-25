@@ -35,6 +35,7 @@ public class Mapper implements MRService{
                   List<String> inputFilePath, String udfClass,
                   String startLine, String offset, String numberOfWorkers,
                   int nodeToCrash, boolean forceWorkerCrash, boolean forceWorkerException) {
+        //instantiate mapper process with parameters
         this.id = id;
         this.ioPort = ioPort;
         this.workerType = workerType;
@@ -53,6 +54,7 @@ public class Mapper implements MRService{
      */
     public List<List> readFile()
     {
+        //read input file to mapper process
         List<Integer> doc_ids = new ArrayList<>();
         List<String> combined_data = new ArrayList<>();
         try {
@@ -85,6 +87,7 @@ public class Mapper implements MRService{
 
     public Output getMapped(Output output,int doc_id,String data)
     {
+        //invoke the UDF for mapper
         try{
             Class cls = Class.forName("TestCases."+udfClass);
             Class args[] = new Class[3];
@@ -105,9 +108,11 @@ public class Mapper implements MRService{
     @Override
     public void execute() throws IOException, NoSuchMethodException {
         System.out.println("Mapper Process Started. ID: "+String.valueOf(id));
+        //Establish socket communication
         Socket socket = new Socket("127.0.0.1", this.ioPort);
         System.out.println(String.valueOf(id) + ": Connected to Server");
         try {
+            //Checks for fault tolerance
             if(this.forceWorkerCrash && this.id == this.nodeToCrash){
                 System.out.println("Will be crashing this node: " + this.id + " as the node selected to crash for testing is: " + this.nodeToCrash);
                 System.exit(0);
@@ -143,7 +148,7 @@ public class Mapper implements MRService{
     public HashMap<String,String> write(Output output)
     {
         try {
-
+            //write mapper output to intermediate files
             HashMap<String,String> output_map=new HashMap<String,String>();//Creating HashMap
             String filename = udfClass+"/"+String.valueOf(id)+"-"+String.valueOf(offset);
             //FileWriter fileWriter = new FileWriter("intermediate/"+filename);
@@ -186,7 +191,7 @@ public class Mapper implements MRService{
     }
 
     public int hashKey(String key){
-
+        // generate hash values for given key
         int keysum=0;
         for(int i=0;i<key.length();i++)
         {

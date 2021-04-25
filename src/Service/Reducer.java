@@ -29,6 +29,7 @@ public class Reducer implements MRService {
 
     public Reducer(int id, String workerType, int ioPort, List<String> inputFilePath,
                    String udfClass, String outputFilePath, String numberOfWorkers,int nodeToCrash, boolean forceWorkerCrash, boolean forceWorkerException) {
+        //instantiate reducer process with parameters
         this.id = id;
         this.ioPort = ioPort;
         this.workerType = workerType;
@@ -45,9 +46,11 @@ public class Reducer implements MRService {
     @Override
     public void execute() throws IOException {
         System.out.println("Reducer Process Started. ID: "+String.valueOf(id));
+        //Establish socket communication
         Socket socket = new Socket("127.0.0.1", this.ioPort);
         System.out.println(String.valueOf(id) + ": Connected to Server");
         try {
+            //Checks for fault tolerance
             if(this.forceWorkerCrash && this.id == this.nodeToCrash){
                 System.out.println("Will be crashing this node: " + this.id + " as the node selected to crash for testing is: " + this.nodeToCrash);
                 System.exit(0);
@@ -152,6 +155,7 @@ public class Reducer implements MRService {
     }
 
     public void write(TreeMap<StringComp, StringComp> sortedOutput) {
+        //write mapper output to intermediate files
         String outputFileName = buildOutputFilePath();
         try {
             FileWriter fileWriter = new FileWriter(outputFileName);
