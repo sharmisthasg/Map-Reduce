@@ -1,0 +1,6 @@
+an 1
+from 4
+time 3
+to 5
+what 1
+work 4
