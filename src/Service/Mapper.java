@@ -23,7 +23,6 @@ public class Mapper implements MRService{
     private String workerType;
     private List<String> inputFilePath;
     private String udfClass;
-    private String OUTPUT_PATH = "../../tmp";
     private int offset;
     private int startLine;
     private int numberOfWorkers;
@@ -127,7 +126,6 @@ public class Mapper implements MRService{
             {
                 output = getMapped(output,doc_ids.get(i),combined_data.get(i));
             }
-            //TODO: Create a Map with Key as Reducer id in [0,numberOfWorkers-1] and output_filename as the value.
             HashMap<String,String> output_map = write(output);
 
             System.out.println(String.valueOf(id) + ": Written to intermediate File");

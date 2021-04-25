@@ -333,7 +333,6 @@ public class Master {
 
     private boolean respawnReducerProcess(Map<Integer, WorkerDetails> failedWorker, ActiveWorkers activeWorkers, ServerSocket server) throws IOException, ClassNotFoundException {
         System.out.println("ReSpawning Process");
-        System.out.println("FailedWorker==>"+ failedWorker);
         Map.Entry<Integer,WorkerDetails> entry = failedWorker.entrySet().iterator().next();
         int workerId = entry.getKey();
         WorkerDetails oldWorkerDetails = entry.getValue();
