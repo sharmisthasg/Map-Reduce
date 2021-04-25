@@ -184,7 +184,6 @@ public class Mapper implements MRService{
                 ", workerType='" + workerType + '\'' +
                 ", inputFilePath=" + inputFilePath +
                 ", udfClass='" + udfClass + '\'' +
-                ", OUTPUT_PATH='" + OUTPUT_PATH + '\'' +
                 ", offset=" + offset +
                 ", startLine=" + startLine +
                 '}';
