@@ -11,6 +11,7 @@ Directory Structure:
     - Compiles Java code to generate .class files
     - Executes Java Map Reduce to generate output files for each of the testcase
     - Compares the output of Java Map Reduce and Python scripts for verification
+7. docs/ - contains the design document, txt files from python execution and the respective folders having the outputs from the Map Reduce execution
 
 Test cases:
 1. Word Count

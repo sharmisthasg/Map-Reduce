@@ -29,6 +29,7 @@ public class Master {
 
     public void start() throws MapReduceException {
         try {
+        	//Loading Map Reduce Properties
             System.out.println("Loading properties from config file....");
             MapReduceProperties mrProp = new MapReduceProperties();
             Properties prop = mrProp.getProperties();
@@ -53,6 +54,7 @@ public class Master {
 
     public void execute() throws MapReduceException{
         try {
+        	//Establishing socket communication between processes
             ServerSocket server = new ServerSocket(this.ioPort);
             System.out.println("Socket Server started");
             ActiveWorkers activeWorkers = ActiveWorkers.getInstance();
@@ -109,6 +111,7 @@ public class Master {
                 startLine += offset;
                 workerId++;
             }
+            //Handling fault tolerance in the code
             ObjectInputStream ois = null;
             String line = "";
             Map<String,String> outputFileMap = null;
@@ -165,6 +168,7 @@ public class Master {
 
     private boolean respawnMapperProcess(Map<Integer, WorkerDetails> failedWorker, ActiveWorkers activeWorkers,
                                          Map<String, List<String>> reducerInputFiles, ServerSocket server) throws IOException, ClassNotFoundException {
+        //Respawning process that have crashed (for fault tolerance)
         System.out.println("ReSpawning Process");
         Map.Entry<Integer,WorkerDetails> entry = failedWorker.entrySet().iterator().next();
         int workerId = entry.getKey();
@@ -332,8 +336,8 @@ public class Master {
     }
 
     private boolean respawnReducerProcess(Map<Integer, WorkerDetails> failedWorker, ActiveWorkers activeWorkers, ServerSocket server) throws IOException, ClassNotFoundException {
+        //Respawning process that have crashed (for fault tolerance)
         System.out.println("ReSpawning Process");
-        System.out.println("FailedWorker==>"+ failedWorker);
         Map.Entry<Integer,WorkerDetails> entry = failedWorker.entrySet().iterator().next();
         int workerId = entry.getKey();
         WorkerDetails oldWorkerDetails = entry.getValue();
@@ -410,6 +414,7 @@ public class Master {
     }
 
     private int countLinesFile() throws FileNotFoundException {
+    	//Get count of lines in input file
         int count = 0;
         File file = new File(this.inputFilePath);
         Scanner sc = new Scanner(file);
@@ -422,6 +427,7 @@ public class Master {
     }
 
     private void setup(String udfClass, String outputFilePath) {
+    	//setup system before new execution
         if(this.forceWorkerException || this.forceWorkerCrash){
             this.nodeToCrash = randomNodeIdGenerator();
             System.out.println("Worker ID to crash ==> " + this.nodeToCrash);
@@ -431,11 +437,13 @@ public class Master {
     }
 
     private int randomNodeIdGenerator() {
+    	//generate random id
         Random rand = new Random();
         return rand.nextInt(Integer.parseInt(this.numOfWorkers));
     }
 
     private void createOutputFolder(String udfClass, String outputFilePath) {
+    	//create new output directory before new execution
         File newDir = new File(outputFilePath+"/"+udfClass);
         if(!newDir.exists()){
             newDir.mkdirs();
@@ -443,6 +451,7 @@ public class Master {
     }
 
     private void createIntermediateFolder(String udfClass, String outputFilePath) {
+    	//create new intermediate directory before new execution
         File newDir = new File(MRConstant.MAP_OUTPUT_DIR + udfClass);
         if(!newDir.exists()){
             newDir.mkdirs();
@@ -450,11 +459,13 @@ public class Master {
     }
 
     private void cleanUp(String udfClass, String outputFilePath) {
+    	//clean files before new execution
         deleteIntermediateFiles(udfClass,outputFilePath);
         deleteOutputFiles(udfClass,outputFilePath);
     }
 
     private void deleteOutputFiles(String udfClass, String outputFilePath) {
+    	//Deleting output files before new execution
         File dir = new File(outputFilePath+"/"+udfClass);
         File[] listOfFiles = dir.listFiles();
         if(listOfFiles==null || listOfFiles.length==0){
@@ -468,6 +479,7 @@ public class Master {
     }
 
     private void deleteIntermediateFiles(String udfClass, String outputFilePath) {
+        //Deleting intermediate files before new execution
         File dir = new File(MRConstant.MAP_OUTPUT_DIR + udfClass);
         File[] listOfFiles = dir.listFiles();
         if(listOfFiles==null || listOfFiles.length==0){

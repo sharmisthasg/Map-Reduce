@@ -1,0 +1,10 @@
+fourth 2
+have 5
+here 4
+it 4
+iteration 3
+map 9
+sentence 8
+these 1
+this 12
+will 8

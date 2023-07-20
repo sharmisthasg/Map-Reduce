@@ -1,0 +1,208 @@
+1. Execute without Fault Tolerance
+2. Execute Fault Tolerance with Crash
+3. Execute Fault Tolerance with Exception
+Enter choice: 1
+Enter the number of desired mappers and reducers: 5
+Starting MapReduce..
+Loading properties from config file....
+Properties Loaded => [WordCount, data/demo.txt, false, 5, output/, false]
+Socket Server started
+Running Mapper!
+Spawning Mapper Processes
+Initiating Worker Process
+Initiating Worker Process
+Initiating Worker Process
+Initiating Worker Process
+Initiating Worker Process
+Mapper Process Started. ID: 0
+Mapper Process Started. ID: 3
+0: Connected to Server
+0: Connected to Server
+Mapper Process Started. ID: 2
+Mapper Process Started. ID: 1
+Mapper Process Started. ID: 4
+3: Connected to Server
+3: Connected to Server
+1: Connected to Server
+1: Connected to Server
+2: Connected to Server
+2: Connected to Server
+4: Connected to Server
+4: Connected to Server
+0: Written to intermediate File
+3: Written to intermediate File
+1: Written to intermediate File
+2: Written to intermediate File
+4: Written to intermediate File
+Received From Mapper ==> WorkerStatus{filePath='{0=intermediate/WordCount/0-4-0.txt, 1=intermediate/WordCount/0-4-1.txt, 2=intermediate/WordCount/0-4-2.txt, 3=intermediate/WordCount/0-4-3.txt, 4=intermediate/WordCount/0-4-4.txt}', status='SUCCESS', workerId=0}
+Received From Mapper ==> WorkerStatus{filePath='{0=intermediate/WordCount/3-4-0.txt, 1=intermediate/WordCount/3-4-1.txt, 2=intermediate/WordCount/3-4-2.txt, 3=intermediate/WordCount/3-4-3.txt, 4=intermediate/WordCount/3-4-4.txt}', status='SUCCESS', workerId=3}
+Received From Mapper ==> WorkerStatus{filePath='{0=intermediate/WordCount/1-4-0.txt, 1=intermediate/WordCount/1-4-1.txt, 2=intermediate/WordCount/1-4-2.txt, 3=intermediate/WordCount/1-4-3.txt, 4=intermediate/WordCount/1-4-4.txt}', status='SUCCESS', workerId=1}
+Received From Mapper ==> WorkerStatus{filePath='{0=intermediate/WordCount/2-4-0.txt, 1=intermediate/WordCount/2-4-1.txt, 2=intermediate/WordCount/2-4-2.txt, 3=intermediate/WordCount/2-4-3.txt, 4=intermediate/WordCount/2-4-4.txt}', status='SUCCESS', workerId=2}
+Received From Mapper ==> WorkerStatus{filePath='{0=intermediate/WordCount/4-6-0.txt, 1=intermediate/WordCount/4-6-1.txt, 2=intermediate/WordCount/4-6-2.txt, 3=intermediate/WordCount/4-6-3.txt, 4=intermediate/WordCount/4-6-4.txt}', status='SUCCESS', workerId=4}
+Mapper Processes are Done!
+Running Reducer!
+Initiating Worker Process
+Initiating Worker Process
+Initiating Worker Process
+Initiating Worker Process
+Initiating Worker Process
+Reducer Process Started. ID: 2
+Reducer Process Started. ID: 0
+Reducer Process Started. ID: 1
+Reducer Process Started. ID: 3
+Reducer Process Started. ID: 4
+2: Connected to Server0: Connected to Server
+
+1: Connected to Server
+4: Connected to Server
+3: Connected to Server
+0: Reducer has written to Output Files
+1: Reducer has written to Output Files
+2: Reducer has written to Output Files
+3: Reducer has written to Output Files
+4: Reducer has written to Output Files
+Received From Reducer ==> WorkerStatus{filePath='null', status='SUCCESS', workerId=2}
+Received From Reducer ==> WorkerStatus{filePath='null', status='SUCCESS', workerId=0}
+Received From Reducer ==> WorkerStatus{filePath='null', status='SUCCESS', workerId=1}
+Received From Reducer ==> WorkerStatus{filePath='null', status='SUCCESS', workerId=4}
+Received From Reducer ==> WorkerStatus{filePath='null', status='SUCCESS', workerId=3}
+Starting MapReduce..
+Loading properties from config file....
+Properties Loaded => [DistributedGrep, data/demo.txt, false, 5, output/, false]
+Socket Server started
+Running Mapper!
+Spawning Mapper Processes
+Initiating Worker Process
+Initiating Worker Process
+Initiating Worker Process
+Initiating Worker Process
+Initiating Worker Process
+Mapper Process Started. ID: 0
+Mapper Process Started. ID: 2
+Mapper Process Started. ID: 4
+0: Connected to Server
+2: Connected to Server0: Connected to Server
+
+2: Connected to Server
+Mapper Process Started. ID: 1
+Mapper Process Started. ID: 3
+4: Connected to Server
+4: Connected to Server
+1: Connected to Server
+1: Connected to Server
+3: Connected to Server
+3: Connected to Server
+2: Written to intermediate File
+0: Written to intermediate File
+3: Written to intermediate File
+4: Written to intermediate File
+1: Written to intermediate File
+Received From Mapper ==> WorkerStatus{filePath='{2=intermediate/DistributedGrep/0-4-2.txt, 3=intermediate/DistributedGrep/0-4-3.txt, 4=intermediate/DistributedGrep/0-4-4.txt}', status='SUCCESS', workerId=0}
+Received From Mapper ==> WorkerStatus{filePath='{0=intermediate/DistributedGrep/2-4-0.txt, 3=intermediate/DistributedGrep/2-4-3.txt, 4=intermediate/DistributedGrep/2-4-4.txt}', status='SUCCESS', workerId=2}
+Received From Mapper ==> WorkerStatus{filePath='{1=intermediate/DistributedGrep/4-6-1.txt}', status='SUCCESS', workerId=4}
+Received From Mapper ==> WorkerStatus{filePath='{0=intermediate/DistributedGrep/1-4-0.txt, 3=intermediate/DistributedGrep/1-4-3.txt, 4=intermediate/DistributedGrep/1-4-4.txt}', status='SUCCESS', workerId=1}
+Received From Mapper ==> WorkerStatus{filePath='{2=intermediate/DistributedGrep/3-4-2.txt, 3=intermediate/DistributedGrep/3-4-3.txt, 4=intermediate/DistributedGrep/3-4-4.txt}', status='SUCCESS', workerId=3}
+Mapper Processes are Done!
+Running Reducer!
+Initiating Worker Process
+Initiating Worker Process
+Initiating Worker Process
+Initiating Worker Process
+Initiating Worker Process
+Reducer Process Started. ID: 1
+Reducer Process Started. ID: 4
+Reducer Process Started. ID: 3
+Reducer Process Started. ID: 2
+Reducer Process Started. ID: 0
+1: Connected to Server
+4: Connected to Server
+2: Connected to Server
+3: Connected to Server
+0: Connected to Server
+1: Reducer has written to Output Files
+0: Reducer has written to Output Files
+2: Reducer has written to Output Files
+4: Reducer has written to Output Files
+3: Reducer has written to Output Files
+Received From Reducer ==> WorkerStatus{filePath='null', status='SUCCESS', workerId=1}
+Received From Reducer ==> WorkerStatus{filePath='null', status='SUCCESS', workerId=4}
+Received From Reducer ==> WorkerStatus{filePath='null', status='SUCCESS', workerId=2}
+Received From Reducer ==> WorkerStatus{filePath='null', status='SUCCESS', workerId=3}
+Received From Reducer ==> WorkerStatus{filePath='null', status='SUCCESS', workerId=0}
+Starting MapReduce..
+Loading properties from config file....
+Properties Loaded => [InvertedIndex, data/demo.txt, false, 5, output/, false]
+Socket Server started
+Running Mapper!
+Spawning Mapper Processes
+Initiating Worker Process
+Initiating Worker Process
+Initiating Worker Process
+Initiating Worker Process
+Initiating Worker Process
+Mapper Process Started. ID: 1
+Mapper Process Started. ID: 2
+1: Connected to Server
+1: Connected to Server
+Mapper Process Started. ID: 4
+2: Connected to Server
+2: Connected to Server
+Mapper Process Started. ID: 3
+Mapper Process Started. ID: 0
+4: Connected to Server
+4: Connected to Server
+3: Connected to Server
+3: Connected to Server
+0: Connected to Server
+0: Connected to Server
+2: Written to intermediate File
+1: Written to intermediate File
+4: Written to intermediate File
+3: Written to intermediate File
+0: Written to intermediate File
+Received From Mapper ==> WorkerStatus{filePath='{0=intermediate/InvertedIndex/1-4-0.txt, 1=intermediate/InvertedIndex/1-4-1.txt, 2=intermediate/InvertedIndex/1-4-2.txt, 3=intermediate/InvertedIndex/1-4-3.txt, 4=intermediate/InvertedIndex/1-4-4.txt}', status='SUCCESS', workerId=1}
+Received From Mapper ==> WorkerStatus{filePath='{0=intermediate/InvertedIndex/2-4-0.txt, 1=intermediate/InvertedIndex/2-4-1.txt, 2=intermediate/InvertedIndex/2-4-2.txt, 3=intermediate/InvertedIndex/2-4-3.txt, 4=intermediate/InvertedIndex/2-4-4.txt}', status='SUCCESS', workerId=2}
+Received From Mapper ==> WorkerStatus{filePath='{0=intermediate/InvertedIndex/4-6-0.txt, 1=intermediate/InvertedIndex/4-6-1.txt, 2=intermediate/InvertedIndex/4-6-2.txt, 3=intermediate/InvertedIndex/4-6-3.txt, 4=intermediate/InvertedIndex/4-6-4.txt}', status='SUCCESS', workerId=4}
+Received From Mapper ==> WorkerStatus{filePath='{0=intermediate/InvertedIndex/3-4-0.txt, 1=intermediate/InvertedIndex/3-4-1.txt, 2=intermediate/InvertedIndex/3-4-2.txt, 3=intermediate/InvertedIndex/3-4-3.txt, 4=intermediate/InvertedIndex/3-4-4.txt}', status='SUCCESS', workerId=3}
+Received From Mapper ==> WorkerStatus{filePath='{0=intermediate/InvertedIndex/0-4-0.txt, 1=intermediate/InvertedIndex/0-4-1.txt, 2=intermediate/InvertedIndex/0-4-2.txt, 3=intermediate/InvertedIndex/0-4-3.txt, 4=intermediate/InvertedIndex/0-4-4.txt}', status='SUCCESS', workerId=0}
+Mapper Processes are Done!
+Running Reducer!
+Initiating Worker Process
+Initiating Worker Process
+Initiating Worker Process
+Initiating Worker Process
+Initiating Worker Process
+Reducer Process Started. ID: 0
+Reducer Process Started. ID: 3
+Reducer Process Started. ID: 2
+Reducer Process Started. ID: 1
+3: Connected to Server
+Reducer Process Started. ID: 4
+0: Connected to Server
+2: Connected to Server
+1: Connected to Server
+4: Connected to Server
+3: Reducer has written to Output Files
+0: Reducer has written to Output Files
+2: Reducer has written to Output Files
+Received From Reducer ==> WorkerStatus{filePath='null', status='SUCCESS', workerId=0}
+Received From Reducer ==> WorkerStatus{filePath='null', status='SUCCESS', workerId=3}
+1: Reducer has written to Output Files
+4: Reducer has written to Output Files
+Received From Reducer ==> WorkerStatus{filePath='null', status='SUCCESS', workerId=2}
+Received From Reducer ==> WorkerStatus{filePath='null', status='SUCCESS', workerId=1}
+Received From Reducer ==> WorkerStatus{filePath='null', status='SUCCESS', workerId=4}
+-----WordCount-----
+Comparing MapReduce Output File with files generated using python script
+WordCount Comparison is Successful
+--------------------
+-----DistributedGrep-----
+Comparing MapReduce Output File with files generated using python script
+DistributedGrep Comparison is Successful
+--------------------
+-----InvertedIndex-----
+Comparing MapReduce Output File with files generated using python script
+InvertedIndex Comparison is Successful
+--------------------
+All the Test Cases have passed Successfully
+MapReduce Works as Expected!
