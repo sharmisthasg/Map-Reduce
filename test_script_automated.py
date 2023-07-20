@@ -79,7 +79,10 @@ os.system("javac -cp src/ src/Main.java src/Nodes/Worker.java src/TestCases/*.ja
 
 
 # In[4]:
-
+print("1. Execute without Fault Tolerance")
+print("2. Execute Fault Tolerance with Crash")
+print("3. Execute Fault Tolerance with Exception")
+choice = input("Enter choice: ")
 
 udfList = ["WordCount", "DistributedGrep", "InvertedIndex"]
 
@@ -95,7 +98,17 @@ for udf in udfList:
     f.write("N="+str(N)+"\n")
     f.write("input_file_path=data/demo.txt\n")
     f.write("output_file_path=output/\n")
-    f.write("udf_class="+udf)
+    f.write("udf_class="+udf+"\n")
+
+    if int(choice)==2:
+	    f.write("crash_worker=true\n")
+	    f.write("exception_worker=false")
+    elif int(choice)==3:
+	    f.write("crash_worker=false\n")
+	    f.write("exception_worker=true")
+    else:
+	    f.write("crash_worker=false\n")
+	    f.write("exception_worker=false")
     f.close()
     os.system("java -cp src/ Main")
     print("Comparing MapReduce Output File with files generated using python script")
@@ -128,6 +141,3 @@ if(result):
     print("MapReduce Works as Expected!")
 else:
     print("Test Case Failed: ",udf_failed)
-
-
-# In[ ]:
